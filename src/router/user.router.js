@@ -6,7 +6,7 @@ const controller = require('../controller/user.controller');
 
 
 //Rota para criar um usuário
-router.post('/', controller.createUserController(User));
+router.post('/create', controller.createUserController(User));
 
 //Rota para adicionar um produto aos favoritos do usuário
 router.post('/:id/favorites', controller.addFavoriteProductController(User));
