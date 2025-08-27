@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 connectToDatabase();
-app.use('/api', userRouter);
+app.use('/api/user', userRouter);
 app.use('/api', productRouter);
 
 app.get("/", (req, res) => {
