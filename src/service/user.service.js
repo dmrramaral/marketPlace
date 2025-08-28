@@ -15,6 +15,11 @@ const createUserService = async (userData) => {
     if (!userData || !userData.name || !userData.email) {
         throw new Error('Dados do usuário incompletos');
     }
+
+    if (await User.findOne({ email: userData.email })) {
+        throw new Error('Email já cadastrado');
+    }
+    
     const newUser = new User(userData);
     return await newUser.save();
 }
