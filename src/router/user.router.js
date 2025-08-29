@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../model/User');
 const controller = require('../controller/user.controller');
+const authMiddleware = require('../middleware/auth.middleware');
 
 
 
@@ -17,7 +18,7 @@ router.get('/', controller.getAllUsersController(User));
 
 
 // Rota para buscar um usuário por ID
-router.get('/:id', controller.findByIdController(User));
+router.get('/:id',authMiddleware, controller.findByIdController(User) );
 
 // Rota para atualizar um usuário por ID
 router.put('/:id', controller.updateUserController(User));

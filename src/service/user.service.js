@@ -8,6 +8,9 @@ const findByIdService = async (id) => {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
+    user.password = undefined; // Remover a senha do objeto retornado
+
+    
     return user;
 }
 
