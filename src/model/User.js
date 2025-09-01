@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true , select : false},
     image: { type: String },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
             _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
             createdAt: { type: Date, default: Date.now }
         }],
-    adress: {
+    address: {
         street: { type: String },
         city: { type: String },
         state: { type: String },
