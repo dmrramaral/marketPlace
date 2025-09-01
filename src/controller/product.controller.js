@@ -1,0 +1,76 @@
+const productService = require('../service/product.service');
+
+//Criar novo produto
+const createProductController = () => async (req, res) => {
+    try {
+        const { name, description, price, category, brand, sizes, colors, stock, images } = req.body;
+        // Validações básicas
+        if (!name || !description || !price || !category || !stock) {
+            return res.status(400).json({ error: 'Nome, descrição, preço, categoria e estoque são obrigatórios' });
+        }
+        // Criar o produto
+        const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images });
+        res.status(201).json(newProduct);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+//Buscar todos os produtos
+const getAllProductsController = () => async (req, res) => {
+    try {
+        const products = await productService.getAllProductsService();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+//Buscar produto por ID
+const getProductByIdController = () => async (req, res) => {
+    try {
+        const product = await productService.findProductByIdService(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+};
+
+//Atualizar produto por ID
+const updateProductController = () => async (req, res) => {
+    try {
+        const { name, description, price, category, brand, sizes, colors, stock, images } = req.body;
+
+        // Validação básica
+        if (!name && !description && !price && !category && !brand && !sizes && !colors && stock === undefined && !images) {
+            return res.status(400).json({ error: 'Pelo menos um campo deve ser fornecido para atualização' });
+        }
+
+        const updatedProduct = await productService.updateProductService(req.params.id, { name, description, price, category, brand, sizes, colors, stock, images });
+        if (!updatedProduct) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+        res.json(updatedProduct);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+//Deletar produto por ID
+const deleteProductController = () => async (req, res) => {
+    try {
+        const deletedProduct = await productService.deleteProductService(req.params.id);
+        if (!deletedProduct) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { createProductController, 
+    getAllProductsController, getProductByIdController, updateProductController, deleteProductController };
