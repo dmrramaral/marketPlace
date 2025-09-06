@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
     category: [{ 
         _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
         name: { type: String },
-        createdAt: Date.now()
+        createdAt: { type: Date, default: Date.now }
      }],
     brand: { type: String },
     sizes: [{ type: String }],
