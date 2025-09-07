@@ -11,10 +11,10 @@ router.get('/cart', authMiddleware, cartController.getCartByUserController);
 router.get('/carts', authMiddleware, cartController.getAllCartsController);
 
 // Rota para adicionar produto ao carrinho do usuário autenticado
-router.post('/cart/products', authMiddleware, cartController.addProductToCartController);
+router.post('/carts/products', authMiddleware, cartController.addProductToCartController);
 
 // Rota para remover produto do carrinho do usuário autenticado
-router.delete('/cart/products', authMiddleware, cartController.removeProductFromCartController);
+router.delete('/carts/products', authMiddleware, cartController.removeProductFromCartController);
 // Pagamento do carrinho
 
 router.post('/pay', authMiddleware, cartController.payCartController);

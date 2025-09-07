@@ -40,9 +40,45 @@ const  validProduct = (req, res, next) => {
     next();
 };
 
+const validAddresses = (req, res, next) => {
+    const { addresses } = req.body;
+    if (!Array.isArray(addresses) || addresses.length === 0) {
+        return res.status(400).json({ error: 'É obrigatório enviar pelo menos um endereço.' });
+    }
+    const requiredFields = ['street', 'city', 'state', 'zipCode', 'country'];
+    const errors = addresses.map((address, idx) => {
+        const missing = requiredFields.filter(field => !address[field]);
+        return missing.length > 0 ? { index: idx, missingFields: missing } : null;
+    }).filter(Boolean);
+    if (errors.length > 0) {
+        return res.status(400).json({ error: 'Campos obrigatórios faltando em um ou mais endereços.', details: errors });
+    }
+    next();
+};
+
+const validaIdParam = (req, res, next) => {
+    const { id } = req.params;
+    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
+        return res.status(400).json({ error: 'Invalid ID format. Must be a 24-character hex string.' });
+    }
+    next();
+};
+
+const validIdbody = (req, res, next) => {
+    const { id } = req.body;
+    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
+        return res.status(400).json({ error: 'Invalid ID format in body. Must be a 24-character hex string.' });
+    }
+    next();
+};
+
+
 
 
 
 module.exports = { validaUser,
-    validProduct
+    validProduct,
+    validAddresses,
+    validaIdParam,
+    validIdbody
  };

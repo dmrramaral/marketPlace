@@ -17,37 +17,40 @@ const findByIdService = (id) => Cart.findById(id).populate('products._id').popul
 
 const findAllService = () => Cart.find().populate('products._id').populate('user');
 
-// Adiciona produto ao carrinho (cria se não existir)
-const addProductToCartService = async (userId, productId, quantity) => {
+// Adiciona array de produtos ao carrinho (cria se não existir)
+const addProductsArrayToCartService = async (userId, productsArray) => {
     let cart = await Cart.findOne({ user: userId });
-    const product = await Product.findById(productId);
-    if (!product) throw new Error('Product not found');
-    if (product.stock < quantity) throw new Error('Insufficient stock for the product');
-
     if (!cart) {
         cart = new Cart({
             user: userId,
-            products: [{ _id: productId, quantity }],
-            totalPrice: product.price * quantity,
+            products: [],
+            totalPrice: 0,
             frete: 0
         });
-    } else {
+    }
+    for (const item of productsArray) {
+        const { _id: productId, quantity } = item;
+        const product = await Product.findById(productId);
+        if (!product) throw new Error(`Product not found: ${productId}`);
+        if (product.stock < quantity) throw new Error(`Insufficient stock for product: ${productId}`);
         const existingProductIndex = cart.products.findIndex(p => p._id.toString() === productId);
         if (existingProductIndex >= 0) {
             cart.products[existingProductIndex].quantity += quantity;
         } else {
             cart.products.push({ _id: productId, quantity });
         }
-        // Recalcula total
-        cart.totalPrice = 0;
-        for (const p of cart.products) {
-            const prod = await Product.findById(p._id);
-            cart.totalPrice += prod.price * p.quantity;
-        }
+    }
+    // Recalcula total
+    cart.totalPrice = 0;
+    for (const p of cart.products) {
+        const prod = await Product.findById(p._id);
+        cart.totalPrice += prod.price * p.quantity;
     }
     cart.frete = calcularFrete(cart);
     await cart.save();
-    return cart.populate('products._id').populate('user');
+    let populatedCart = await cart.populate('products._id');
+   // populatedCart = await populatedCart.populate('user');
+    return populatedCart;
 };
 
 // Remove produto do carrinho, deleta carrinho se vazio
@@ -68,8 +71,10 @@ const removeProductFromCartService = async (userId, productId) => {
         await Cart.findByIdAndDelete(cart._id);
         return null;
     } else {
-        await cart.save();
-        return cart.populate('products._id').populate('user');
+    await cart.save();
+    let populatedCart = await cart.populate('products._id');
+    populatedCart = await populatedCart.populate('user');
+    return populatedCart;
     }
 };
 
@@ -87,14 +92,16 @@ const payCartService = async (userId, paymentMethod, transactionId) => {
         transactionId: transactionId || null
     };
     await cart.save();
-    return cart.populate('products._id').populate('user');
+    let populatedCart = await cart.populate('products._id');
+    populatedCart = await populatedCart.populate('user');
+    return populatedCart;
 };
 
 module.exports = {
     findByIdService,
     findAllService,
     findCartByUserService,
-    addProductToCartService,
+    addProductsArrayToCartService,
     removeProductFromCartService,
     payCartService,
 };

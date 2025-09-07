@@ -26,6 +26,7 @@ const getCartByUserController = async (req, res) => {
     }
 };
 
+// Busca todos os carrinhos (admin)
 const getAllCartsController = async (req, res) => {
     try {
         const carts = await CartService.findAllService();
@@ -35,11 +36,14 @@ const getAllCartsController = async (req, res) => {
     }
 };
 
-// Adiciona produto ao carrinho do usuário autenticado
+// Adiciona produtos ao carrinho do usuário autenticado (agora aceita array)
 const addProductToCartController = async (req, res) => {
     try {
-        const { productId, quantity } = req.body;
-        const cart = await CartService.addProductToCartService(req.user.id, productId, quantity);
+        const { products } = req.body;
+        if (!Array.isArray(products) || products.length === 0) {
+            return res.status(400).json({ error: 'Envie um array de produtos.' });
+        }
+        const cart = await CartService.addProductsArrayToCartService(req.user.id, products);
         res.status(200).json(cart);
     } catch (error) {
         res.status(400).json({ error: error.message });
