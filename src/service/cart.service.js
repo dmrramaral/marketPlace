@@ -49,7 +49,6 @@ const addProductsArrayToCartService = async (userId, productsArray) => {
     cart.frete = calcularFrete(cart);
     await cart.save();
     let populatedCart = await cart.populate('products._id');
-   // populatedCart = await populatedCart.populate('user');
     return populatedCart;
 };
 
