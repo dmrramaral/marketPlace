@@ -1,7 +1,6 @@
 
 const Cart = require('../model/Cart');
 const Product = require('../model/Product');
-const ValidationUtil = require('../util/validation.util');
 
 
 // Calcula o frete (exemplo: valor fixo)
