@@ -75,12 +75,13 @@ const getAllUsersService = async () => {
     return await User.find();
 }
 
-const createAddressService = async (userId, addressData) => {
+const createAddressService = async (userId, addressesArray) => {
     const user = await User.findById(userId);
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-    user.addresses.push(addressData);
+    // Adiciona cada endereço individualmente
+    addressesArray.forEach(address => user.addresses.push(address));
     await user.save();
     return user;
 }

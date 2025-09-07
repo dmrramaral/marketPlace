@@ -13,14 +13,16 @@ const UserSchema = new mongoose.Schema({
             _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
             createdAt: { type: Date, default: Date.now }
         }],
-    address: {
-        street: { type: String },
-        city: { type: String },
-        state: { type: String },
-        zipCode: { type: String },
-        country: { type: String },
-        createdAt: { type: Date, default: Date.now },
-    },
+    addresses: [
+        {
+            street: { type: String },
+            city: { type: String },
+            state: { type: String },
+            zipCode: { type: String },
+            country: { type: String },
+            createdAt: { type: Date, default: Date.now },
+        }
+    ],
     admin: { type: Boolean, default: false , required: true }
 });
 

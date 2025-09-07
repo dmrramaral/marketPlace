@@ -124,13 +124,21 @@ const deleteFavoriteProductController = () => async (req, res) => {
 // Criando enderecos para o usuario
 const createAddressController = () => async (req, res) => {
     try {
-        const { street, city, state, zip } = req.body;
+        // Espera um array de endereços no corpo da requisição
+        const { addresses } = req.body;
         const userId = req.params.id;
-        const updatedUser = await userService.createAddressService(userId, { street, city, state, zip });
+
+        if (!Array.isArray(addresses) || addresses.length === 0) {
+            return res.status(400).json({ error: 'Endereço inválido. Deve ser um array não vazio.' });
+        }
+
+        const updatedUser = await userService.createAddressService(userId, addresses);
+
         if (!updatedUser) {
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
         res.status(200).json(updatedUser);
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
