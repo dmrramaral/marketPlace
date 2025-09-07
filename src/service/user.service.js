@@ -15,7 +15,7 @@ const findByIdService = async (id) => {
 }
 
 const createUserService = async (userData) => {
-    if (!userData || !userData.name || !userData.email) {
+    if (!userData?.name || !userData?.email) {
         throw new Error('Dados do usuário incompletos');
     }
 
