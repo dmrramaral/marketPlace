@@ -13,6 +13,16 @@ const options = {
     servers: [
       { url: 'http://localhost:3000/api' }
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+
   },
   apis: ['./src/router/*.js'], // Caminho para os arquivos de rotas/controllers
 };
