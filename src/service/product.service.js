@@ -1,8 +1,20 @@
 const Product = require('../model/Product');
+const Category = require('../model/Category');
 
 const createProductService = async (productData) => {
     if (!productData?.name || !productData?.description || !productData?.price || !productData?.category || !productData?.stock) {
         throw new Error('Dados do produto incompletos');
+    }
+
+    // Verificar se todas as categorias existem
+    if (!Array.isArray(productData.category) || productData.category.length === 0) {
+        throw new Error('Categoria inválida');
+    }
+    for (const cat of productData.category) {
+        const exists = await Category.findById(cat._id);
+        if (!exists) {
+            throw new Error(`Categoria inválida: ${cat._id}`);
+        }
     }
 
     const newProduct = new Product(productData);

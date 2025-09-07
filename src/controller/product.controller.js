@@ -12,7 +12,8 @@ const createProductController = () => async (req, res) => {
         const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images });
         res.status(201).json(newProduct);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.log(error);
+         return res.status(400).json({ message: 'Senha ou Usuário incorreto' });
     }
 };
 
