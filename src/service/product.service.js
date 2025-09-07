@@ -21,8 +21,8 @@ const createProductService = async (productData) => {
     return await newProduct.save();
 }
 
-const getAllProductsService = async () => {
-    return await Product.find().populate('category', 'name').populate('reviews.user', 'name email');
+const getAllProductsService = async (pagination) => {
+    return await Product.find().limit(pagination.limit).skip(pagination.offset).populate('category', 'name').populate('reviews.user', 'name email');
 }
 
 const findProductByIdService = async (id) => {
