@@ -54,8 +54,8 @@ const addFavoriteProductService = async (userId, productId) => {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-    if (!user.favorites.includes(productId)) {
-        user.favorites.push(productId);
+        if (!user.favoritesProducts.includes(productId)) {
+            user.favoritesProducts.push(productId);
         await user.save();
     }
     return user;
@@ -66,7 +66,7 @@ const deleteFavoriteProductService = async (userId, productId) => {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-    user.favorites = user.favorites.filter(fav => fav.toString() !== productId);
+        user.favoritesProducts = user.favoritesProducts.filter(fav => fav.toString() !== productId);
     await user.save();
     return user;
 }

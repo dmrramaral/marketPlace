@@ -12,7 +12,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 /**
  * @swagger
- * /cart/cart:
+ * /api/cart/cart:
  *   get:
  *     summary: Buscar carrinho do usuário autenticado
  *     tags: [Cart]
@@ -29,7 +29,7 @@ router.get('/cart', authMiddleware, cartController.getCartByUserController);
 
 /**
  * @swagger
- * /cart/carts:
+ * /api/cart/carts:
  *   get:
  *     summary: Buscar todos os carrinhos (admin)
  *     tags: [Cart]
@@ -44,7 +44,7 @@ router.get('/carts', authMiddleware, cartController.getAllCartsController);
 
 /**
  * @swagger
- * /cart/carts/products:
+ * /api/cart/carts/products:
  *   post:
  *     summary: Adicionar produtos ao carrinho
  *     tags: [Cart]
@@ -77,7 +77,7 @@ router.post('/carts/products', authMiddleware, cartController.addProductToCartCo
 
 /**
  * @swagger
- * /cart/carts/products:
+ * /api/cart/carts/products:
  *   delete:
  *     summary: Remover produto do carrinho
  *     tags: [Cart]
@@ -105,7 +105,7 @@ router.delete('/carts/products', authMiddleware, cartController.removeProductFro
 
 /**
  * @swagger
- * /cart/pay:
+ * /api/cart/pay:
  *   post:
  *     summary: Realizar pagamento do carrinho
  *     tags: [Cart]

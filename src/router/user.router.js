@@ -14,7 +14,7 @@ const validationMiddleware = require('../middleware/validation.middleware');
 //Rota para criar um usuário
 /**
  * @swagger
- * /user/user/create:
+ * /api/user/create:
  *   post:
  *     summary: Criar um novo usuário
  *     tags: [User]
@@ -46,20 +46,20 @@ const validationMiddleware = require('../middleware/validation.middleware');
  *                       type: string
  *     responses:
  *       201:
- *         description: Usuário criado com sucesso
+ *         description: "Usuário criado com sucesso"
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Requisição inválida. Campos obrigatórios ausentes ou formato incorreto.
+ *         description: "Requisição inválida. Campos obrigatórios ausentes ou formato incorreto."
  */
 router.post('/create', validationMiddleware.validaUser, userController.createUserController(User));
 
 //Rota para adicionar um produto aos favoritos do usuário
 /**
  * @swagger
- * /user/user/{id}/favorites:
+ * /api/user/{id}/favorites:
  *   post:
  *     summary: Adicionar um produto aos favoritos do usuário
  *     tags: [User]
@@ -83,18 +83,18 @@ router.post('/create', validationMiddleware.validaUser, userController.createUse
  *               - productId
  *     responses:
  *       200:
- *         description: Produto adicionado aos favoritos com sucesso
+ *         description: "Produto adicionado aos favoritos com sucesso"
  *       400:
- *         description: Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: productId faltando).
+ *         description: "Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: productId faltando)."
  *       404:
- *         description: Usuário ou produto não encontrado.  
+ *         description: "Usuário ou produto não encontrado."
  */
 router.post('/:id/favorites',validationMiddleware.validaIdParam, userController.addFavoriteProductController(User));
 
 //Rota para  inserir endereço ao usuário
 /**
  * @swagger
- * /user/user/{id}/address:
+ * /api/user/{id}/address:
  *   post:
  *     summary: Adicionar um endereço ao usuário
  *     tags: [User]
@@ -131,18 +131,18 @@ router.post('/:id/favorites',validationMiddleware.validaIdParam, userController.
  *               - addresses
  *     responses:
  *       200:
- *         description: Endereço adicionado com sucesso
+ *         description: "Endereço adicionado com sucesso"
  *       400:
- *         description: Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: addresses faltando ou campos obrigatórios dentro de addresses ausentes).
+ *         description: "Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: addresses faltando ou campos obrigatórios dentro de addresses ausentes)."
  *       404:
- *         description: Usuário não encontrado.
+ *         description: "Usuário não encontrado."
  */
 router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddleware.validAddresses ,userController.createAddressController());
 
 //Routas para buscar todos os usuários
 /**
  * @swagger
- * /user/user/:
+ * /api/user:
  *   get:
  *     summary: Buscar todos os usuários
  *     tags: [User]
@@ -150,7 +150,7 @@ router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddlew
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de usuários
+ *         description: "Lista de usuários"
  *         content:
  *           application/json:
  *             schema:
@@ -158,16 +158,16 @@ router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddlew
  *               items:
  *                 $ref: '#/components/schemas/User'
  *       401:
- *         description: Não autorizado. Token JWT ausente ou inválido.
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
  *       500:
- *         description: Erro ao buscar usuários
+ *         description: "Erro ao buscar usuários"
  */ 
 router.get('/',authMiddleware, userController.getAllUsersController(User));
 
 // Rota para buscar um usuário por ID
 /**
  * @swagger
- * /user/user/{id}:
+ * /api/user/{id}:
  *   get:
  *     summary: Buscar um usuário por ID
  *     tags: [User]
@@ -182,22 +182,22 @@ router.get('/',authMiddleware, userController.getAllUsersController(User));
  *         description: ID do usuário
  *     responses:
  *       200:
- *         description: Usuário encontrado
+ *         description: "Usuário encontrado"
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       401:
- *         description: Não autorizado. Token JWT ausente ou inválido.
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
  *       404:
- *         description: Usuário não encontrado
+ *         description: "Usuário não encontrado"
  */ 
 router.get('/:id',authMiddleware, userController.findByIdController(User) );
 
 // Rota para atualizar um usuário por ID
 /**
  * @swagger
- * /user/{id}:
+ * /api/user/{id}:
  *   put:
  *     summary: Atualizar um usuário por ID
  *     tags: [User]
@@ -223,20 +223,20 @@ router.get('/:id',authMiddleware, userController.findByIdController(User) );
  *                 type: string
  *     responses:
  *       200:
- *         description: Usuário atualizado com sucesso
+ *         description: "Usuário atualizado com sucesso"
  *       400:
- *         description: Requisição inválida. Campos obrigatórios ausentes ou formato inválido.
+ *         description: "Requisição inválida. Campos obrigatórios ausentes ou formato inválido."
  *       401:
- *         description: Não autorizado. Token JWT ausente ou inválido.
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
  *       404:
- *         description: Usuário não encontrado
+ *         description: "Usuário não encontrado"
  */
 router.put('/:id',authMiddleware,validationMiddleware.validaIdParam,validationMiddleware.validaUser, userController.updateUserController(User));
 
 // Rota para deletar um usuário por ID
 /**
  * @swagger
- * /user/user/{id}:
+ * /api/user/{id}:
  *   delete:
  *     summary: Deletar um usuário por ID
  *     tags: [User]
@@ -251,18 +251,18 @@ router.put('/:id',authMiddleware,validationMiddleware.validaIdParam,validationMi
  *         description: ID do usuário
  *     responses:
  *       200:
- *         description: Usuário deletado com sucesso
+ *         description: "Usuário deletado com sucesso"
  *       401:
- *         description: Não autorizado. Token JWT ausente ou inválido.
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
  *       404:
- *         description: Usuário não encontrado
+ *         description: "Usuário não encontrado"
  */
 router.delete('/:id',authMiddleware,validationMiddleware.validaIdParam, userController.deleteUserController(User));
 
 // Rota para remover um produto dos favoritos do usuário
 /**
  * @swagger
- * /user/user/{id}/favorites:
+ * /api/user/{id}/favorites:
  *   delete:
  *     summary: Remover um produto dos favoritos do usuário
  *     tags: [User]
@@ -288,13 +288,13 @@ router.delete('/:id',authMiddleware,validationMiddleware.validaIdParam, userCont
  *               - productId
  *     responses:
  *       200:
- *         description: Produto removido dos favoritos com sucesso
+ *         description: "Produto removido dos favoritos com sucesso"
  *       400:
- *         description: Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: productId faltando).
+ *         description: "Requisição inválida. Campos obrigatórios ausentes ou formato incorreto (ex: productId faltando)."
  *       401:
- *         description: Não autorizado. Token JWT ausente ou inválido.
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
  *       404:
- *         description: Usuário ou produto não encontrado
+ *         description: "Usuário ou produto não encontrado"
  */
 router.delete('/:id/favorites',authMiddleware,validationMiddleware.validaIdParam, userController.deleteFavoriteProductController(User));
 

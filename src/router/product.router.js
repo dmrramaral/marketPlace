@@ -14,7 +14,7 @@ const paginationMiddleware = require("../middleware/pagination.middleware");
 
 /**
  * @swagger
- * /product/products/create:
+ * /api/product/products/create:
  *   post:
  *     summary: Criar um novo produto
  *     tags: [Product]
@@ -53,7 +53,7 @@ router.post("/products/create", authMiddleware ,validProduct, productController.
 
 /**
  * @swagger
- * /product/products:
+ * /api/product/products:
  *   get:
  *     summary: Buscar todos os produtos
  *     tags: [Product]
@@ -77,7 +77,7 @@ router.get("/products", paginationMiddleware, productController.getAllProductsCo
 
 /**
  * @swagger
- * /product/products/{id}:
+ * /api/product/products/{id}:
  *   get:
  *     summary: Buscar produto por ID
  *     tags: [Product]
@@ -99,7 +99,7 @@ router.get("/products/:id",validaIdParam, productController.getProductByIdContro
 
 /**
  * @swagger
- * /product/products/{id}:
+ * /api/product/products/{id}:
  *   put:
  *     summary: Atualizar produto por ID
  *     tags: [Product]
@@ -147,7 +147,7 @@ router.put("/products/:id", authMiddleware, validaIdParam, validProduct, product
 
 /**
  * @swagger
- * /product/products/{id}:
+ * /api/product/products/{id}:
  *   delete:
  *     summary: Deletar produto por ID
  *     tags: [Product]

@@ -20,7 +20,7 @@ const findByIdController = () => async (req, res) => {
 //Criar novo usuário
 const createUserController = () => async (req, res) => {
     try {
-        const { name, email, password, image, adress, admin } = req.body;
+        const { name, email, password, image, addresses, admin } = req.body;
         // Validacaoes basicas
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' });
@@ -43,7 +43,7 @@ const createUserController = () => async (req, res) => {
             return res.status(400).json({ error: 'A senha deve conter pelo menos um caractere especial (!@#$%^&*)' });
         }
         // Criar o usuário
-        const newUser = await userService.createUserService({ name, email, password, image, adress, admin });
+    const newUser = await userService.createUserService({ name, email, password, image, addresses, admin });
         res.status(201).json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -53,14 +53,14 @@ const createUserController = () => async (req, res) => {
 //Atualizar usuário por ID
 const updateUserController = () => async (req, res) => {
     try {
-        const { name, email, password, image, adress, admin } = req.body;
+    const { name, email, password, image, addresses, admin } = req.body;
 
         // Validação básica
         if (!name && !email && !password && !image && !adress && admin === undefined) {
             return res.status(400).json({ error: 'Pelo menos um campo deve ser fornecido para atualização' });
         }
 
-        const updatedUser = await userService.updateUserService(req.params.id, { name, email, password, image, adress, admin });
+    const updatedUser = await userService.updateUserService(req.params.id, { name, email, password, image, addresses, admin });
         if (!updatedUser) {
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
