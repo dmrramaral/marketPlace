@@ -8,7 +8,11 @@ const options = {
     info: {
       title: 'MarketPlace API',
       version: '1.0.0',
-      description: 'Documentação da API do MarketPlace',
+      description: 'Documentação da API do MarketPlace de uma loja de Sapatos',
+      contact: {
+        name: "Douglas Amaral",
+        email: "dmrramaral@gmail.com"
+      }
     },
     servers: [
       { url: 'http://localhost:3000/api' }
