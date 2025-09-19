@@ -1,3 +1,132 @@
+# MarketPlace API
+
+> API simples de exemplo para um marketplace de calçados. Contém endpoints para autenticação, usuários, categorias, produtos, carrinho e tickets.
+
+## Tecnologias
+- Node.js + Express
+- MongoDB + Mongoose
+- Swagger (swagger-jsdoc + swagger-ui-express)
+- JWT para autenticação
+
+## Requisitos
+- Node.js 16+ (recomendado)
+- MongoDB (local ou Atlas)
+
+## Instalação
+
+1. Instale dependências:
+
+```bash
+npm install
+```
+
+2. Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz com as seguintes variáveis básicas:
+
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/marketplace
+JWT_SECRET=algumsegredodetoken
+```
+
+3. Rodar em desenvolvimento:
+
+```bash
+npm run dev
+```
+
+O servidor irá subir por padrão em `http://localhost:3000` (ou conforme `PORT`).
+
+## Rotas principais
+
+O projeto usa prefixos nas rotas montadas em `index.js`:
+
+- `/api/auth` — autenticação (login/registro)
+- `/api/user` — usuários
+- `/api/product` — produtos
+- `/api/category` — categorias
+- `/api/cart` — carrinho
+- `/docs` — Swagger UI
+
+Exemplo de rota pública (health): `GET /`
+
+## Documentação (Swagger)
+
+Após subir o servidor, abra a documentação em:
+
+```
+http://localhost:3000/docs/api-docs
+```
+
+Os schemas principais foram definidos em `src/router/docs.router.js` e os JSDoc por endpoint estão nos arquivos dentro de `src/router/`.
+
+Para usar a opção Authorize (Bearer token) na UI do Swagger, copie o token JWT obtido em `/api/auth/login` e clique em Authorize > `Bearer <token>`.
+
+## Postman
+
+Há uma coleção de Postman no repositório: `marketplace.postman_collection.json`. Use as variáveis:
+
+- `{{baseUrl}}` — ex: `http://localhost:3000`
+- `{{jwt}}` — token JWT retornado no login
+
+Exemplos incluídos na coleção:
+- Auth / Login
+- User - Create
+- User - Get All
+- Product - Create / List / GetById
+- Category - Create / List
+- Cart - Add Products / Get My Cart / Pay
+
+## Formatos esperados (exemplos)
+
+- Criar usuário (POST /api/user/create):
+
+```json
+{
+    "name": "João Silva",
+    "email": "user@example.com",
+    "password": "Senha123!",
+    "addresses": [ { "street": "Rua A, 123", "city": "Cidade", "state": "SP", "zipCode": "01234-567", "country": "BR" } ]
+}
+```
+
+- Criar produto (POST /api/product/products/create) — enviar `category` como array de ids (recomendado):
+
+```json
+{
+    "name": "Tênis Exemplo",
+    "description": "Tênis confortável",
+    "price": 199.9,
+    "category": [ "68abcd1234ef567890abcdef" ],
+    "stock": 10
+}
+```
+
+- Adicionar produtos ao carrinho (POST /api/cart/carts/products):
+
+```json
+{
+    "products": [ { "_id": "<productId>", "quantity": 2 } ]
+}
+```
+
+## Boas práticas e notas
+
+- Prefira enviar referências (`ObjectId`) para relacionamentos e usar `.populate()` no retorno quando precisar do documento completo.
+- Os schemas para requisição/resposta estão centralizados em `src/router/docs.router.js` para evitar duplicação nos JSDoc dos routers.
+- Valide os ids e os formatos no cliente antes de enviar (ex.: `validaIdParam`, `validation.middleware`).
+
+## Próximos passos recomendados
+
+- Adicionar testes (jest + supertest) para endpoints críticos.
+- Incluir middlewares de segurança: `helmet`, `express-rate-limit`.
+- Implementar integração com gateway de pagamento (ou mock de pagamento) para o fluxo de tickets.
+
+## Contato
+
+Projeto mantido por: dmrramaral
+
 # marketPlace
 
 <div align="center">

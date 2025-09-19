@@ -36,7 +36,7 @@ const createUserController = () => async (req, res) => {
         if (!/[a-z]/.test(password)) {
             return res.status(400).json({ error: 'A senha deve conter pelo menos uma letra minúscula' });
         }
-        if (!/[0-9]/.test(password)) {
+            if (!/\d/.test(password)) {
             return res.status(400).json({ error: 'A senha deve conter pelo menos um número' });
         }
         if (!/[!@#$%^&*]/.test(password)) {
@@ -100,7 +100,7 @@ const addFavoriteProductController = () => async (req, res) => {
 //Buscar todos os usuários
 const getAllUsersController = () => async (req, res) => {
     try {
-        const users = await userService.getAllUsersService();
+        const users = await userService.getAllUsersService(req.pagination);
         res.json(users);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -26,12 +26,7 @@ const {validaIdParam} = require('../middleware/validation.middleware');
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/Category'
  *     responses:
  *       201:
  *         description: Categoria criada
@@ -96,12 +91,7 @@ router.get('/categories/:id', validaIdParam, categoryController.getCategoryById)
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/Category'
  *     responses:
  *       200:
  *         description: Categoria atualizada

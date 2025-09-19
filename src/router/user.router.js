@@ -4,6 +4,7 @@ const User = require('../model/User');
 const userController = require('../controller/user.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const validationMiddleware = require('../middleware/validation.middleware');
+const paginationMiddleware = require('../middleware/pagination.middleware');
 
 /**
  * @swagger
@@ -11,10 +12,12 @@ const validationMiddleware = require('../middleware/validation.middleware');
  *   name: User
  *   description: Operações de usuários
  */
+
 //Rota para criar um usuário
+
 /**
  * @swagger
- * /api/user/create:
+ * /user/create:
  *   post:
  *     summary: Criar um novo usuário
  *     tags: [User]
@@ -59,10 +62,12 @@ router.post('/create', validationMiddleware.validaUser, userController.createUse
 //Rota para adicionar um produto aos favoritos do usuário
 /**
  * @swagger
- * /api/user/{id}/favorites:
+ * /user/{id}/favorites:
  *   post:
  *     summary: Adicionar um produto aos favoritos do usuário
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -89,15 +94,17 @@ router.post('/create', validationMiddleware.validaUser, userController.createUse
  *       404:
  *         description: "Usuário ou produto não encontrado."
  */
-router.post('/:id/favorites',validationMiddleware.validaIdParam, userController.addFavoriteProductController(User));
+router.post('/:id/favorites',validationMiddleware.validaUser,validationMiddleware.validaIdParam, validationMiddleware.validaUser, userController.addFavoriteProductController(User));
 
 //Rota para  inserir endereço ao usuário
 /**
  * @swagger
- * /api/user/{id}/address:
+ * /user/{id}/address:
  *   post:
  *     summary: Adicionar um endereço ao usuário
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -137,17 +144,29 @@ router.post('/:id/favorites',validationMiddleware.validaIdParam, userController.
  *       404:
  *         description: "Usuário não encontrado."
  */
-router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddleware.validAddresses ,userController.createAddressController());
+router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddleware.validAddresses, validationMiddleware.validaUser, userController.createAddressController());
 
 //Routas para buscar todos os usuários
 /**
  * @swagger
- * /api/user:
+ * /user:
  *   get:
- *     summary: Buscar todos os usuários
+ *     summary: "Buscar todos os usuários"
  *     tags: [User]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Número da página para paginação (padrão é 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Número de itens por página para paginação (padrão é 10)
+ *
  *     responses:
  *       200:
  *         description: "Lista de usuários"
@@ -162,12 +181,12 @@ router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddlew
  *       500:
  *         description: "Erro ao buscar usuários"
  */ 
-router.get('/',authMiddleware, userController.getAllUsersController(User));
+router.get('/',authMiddleware,paginationMiddleware, userController.getAllUsersController(User));
 
 // Rota para buscar um usuário por ID
 /**
  * @swagger
- * /api/user/{id}:
+ * /user/{id}:
  *   get:
  *     summary: Buscar um usuário por ID
  *     tags: [User]
@@ -197,7 +216,7 @@ router.get('/:id',authMiddleware, userController.findByIdController(User) );
 // Rota para atualizar um usuário por ID
 /**
  * @swagger
- * /api/user/{id}:
+ * /user/{id}:
  *   put:
  *     summary: Atualizar um usuário por ID
  *     tags: [User]
@@ -236,7 +255,7 @@ router.put('/:id',authMiddleware,validationMiddleware.validaIdParam,validationMi
 // Rota para deletar um usuário por ID
 /**
  * @swagger
- * /api/user/{id}:
+ * /user/{id}:
  *   delete:
  *     summary: Deletar um usuário por ID
  *     tags: [User]
@@ -262,7 +281,7 @@ router.delete('/:id',authMiddleware,validationMiddleware.validaIdParam, userCont
 // Rota para remover um produto dos favoritos do usuário
 /**
  * @swagger
- * /api/user/{id}/favorites:
+ * /user/{id}/favorites:
  *   delete:
  *     summary: Remover um produto dos favoritos do usuário
  *     tags: [User]

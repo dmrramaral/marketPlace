@@ -17,38 +17,69 @@ const findByIdService = (id) => Cart.findById(id).populate('products._id').popul
 
 const findAllService = () => Cart.find().populate('products._id').populate('user');
 
-// Adiciona array de produtos ao carrinho (cria se não existir)
+// Adiciona array de produtos ao carrinho (cria se não existir) - otimizado em batch
 const addProductsArrayToCartService = async (userId, productsArray) => {
+    // Summarize requested quantities per product id
+    const addedMap = productsArray.reduce((acc, it) => {
+        const id = it._id?.toString ? it._id.toString() : it._id;
+        const qty = Number(it.quantity) || 0;
+        if (!acc[id]) acc[id] = 0;
+        acc[id] += qty;
+        return acc;
+    }, {});
+
+    const productIds = Object.keys(addedMap);
+    if (productIds.length === 0) throw new Error('No products provided');
+
+    // Fetch all products in batch
+    const products = await Product.find({ _id: { $in: productIds } });
+    const productsMap = products.reduce((m, p) => { m[p._id.toString()] = p; return m; }, {});
+
+    // ensure all products exist
+    for (const id of productIds) {
+        if (!productsMap[id]) throw new Error(`Product not found: ${id}`);
+    }
+
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
-        cart = new Cart({
-            user: userId,
-            products: [],
-            totalPrice: 0,
-            frete: 0
-        });
+        cart = new Cart({ user: userId, products: [], totalPrice: 0, frete: 0 });
     }
-    for (const item of productsArray) {
-        const { _id: productId, quantity } = item;
-        const product = await Product.findById(productId);
-        if (!product) throw new Error(`Product not found: ${productId}`);
-        if (product.stock < quantity) throw new Error(`Insufficient stock for product: ${productId}`);
-        const existingProductIndex = cart.products.findIndex(p => p._id.toString() === productId);
-        if (existingProductIndex >= 0) {
-            cart.products[existingProductIndex].quantity += quantity;
+
+    // build existing quantities map
+    const existingMap = cart.products.reduce((m, p) => { m[p._id.toString()] = p.quantity; return m; }, {});
+
+    // Validate stock and update cart quantities
+    for (const id of productIds) {
+        const addQty = addedMap[id] || 0;
+        const existingQty = existingMap[id] || 0;
+        const desiredQty = existingQty + addQty;
+        const product = productsMap[id];
+        if (product.stock < desiredQty) throw new Error(`Insufficient stock for product: ${id}`);
+
+        const existingIndex = cart.products.findIndex(p => p._id.toString() === id);
+        if (existingIndex >= 0) {
+            cart.products[existingIndex].quantity = desiredQty;
         } else {
-            cart.products.push({ _id: productId, quantity });
+            cart.products.push({ _id: id, quantity: desiredQty });
         }
     }
-    // Recalcula total
+
+    // Recalculate totalPrice using batch fetch of current products in cart
+    const cartProductIds = cart.products.map(p => p._id.toString());
+    const cartProducts = await Product.find({ _id: { $in: cartProductIds } });
+    const cartProductsMap = cartProducts.reduce((m, p) => { m[p._id.toString()] = p; return m; }, {});
+
     cart.totalPrice = 0;
     for (const p of cart.products) {
-        const prod = await Product.findById(p._id);
+        const prod = cartProductsMap[p._id.toString()];
+        if (!prod) throw new Error(`Product data missing when calculating total: ${p._id}`);
         cart.totalPrice += prod.price * p.quantity;
     }
+
     cart.frete = calcularFrete(cart);
     await cart.save();
     let populatedCart = await cart.populate('products._id');
+    populatedCart = await populatedCart.populate('user');
     return populatedCart;
 };
 
@@ -59,10 +90,14 @@ const removeProductFromCartService = async (userId, productId) => {
     const productIndex = cart.products.findIndex(p => p._id.toString() === productId);
     if (productIndex === -1) throw new Error('Product not found in cart');
     cart.products.splice(productIndex, 1);
-    // Recalcula total
+    // Recalcula total usando batch
+    const cartProductIds = cart.products.map(p => p._id.toString());
+    const cartProducts = await Product.find({ _id: { $in: cartProductIds } });
+    const cartProductsMap = cartProducts.reduce((m, p) => { m[p._id.toString()] = p; return m; }, {});
     cart.totalPrice = 0;
     for (const p of cart.products) {
-        const prod = await Product.findById(p._id);
+        const prod = cartProductsMap[p._id.toString()];
+        if (!prod) throw new Error(`Product data missing when calculating total: ${p._id}`);
         cart.totalPrice += prod.price * p.quantity;
     }
     cart.frete = calcularFrete(cart);

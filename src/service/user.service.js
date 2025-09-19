@@ -1,5 +1,14 @@
 const User = require("../model/User");
 
+// helper para extrair id como string de forma segura
+const idStr = (x) => {
+    if (x === null || x === undefined) return '';
+    if (typeof x === 'string') return x;
+    if (x && x._id) return String(x._id);
+    if (x && typeof x.toHexString === 'function') return x.toHexString();
+    return String(x);
+};
+
 const findByIdService = async (id) => {
     if (!id) {
         throw new Error('ID do usuário é obrigatório');
@@ -22,9 +31,11 @@ const createUserService = async (userData) => {
     if (await User.findOne({ email: userData.email })) {
         throw new Error('Email já cadastrado');
     }
+
+    const newUser = await new User(userData).save();
+    newUser.password = undefined;
+    return newUser;
     
-    const newUser = new User(userData);
-    return await newUser.save();
 }
 
 const updateUserService = async (id, userData) => {
@@ -54,8 +65,9 @@ const addFavoriteProductService = async (userId, productId) => {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-        if (!user.favoritesProducts.includes(productId)) {
-            user.favoritesProducts.push(productId);
+    const pid = idStr(productId);
+    if (!user.favoritesProducts.some(f => idStr(f) === pid)) {
+        user.favoritesProducts.push({ _id: productId });
         await user.save();
     }
     return user;
@@ -66,13 +78,14 @@ const deleteFavoriteProductService = async (userId, productId) => {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-        user.favoritesProducts = user.favoritesProducts.filter(fav => fav.toString() !== productId);
+        const pid2 = idStr(productId);
+        user.favoritesProducts = user.favoritesProducts.filter(fav => idStr(fav) !== pid2);
     await user.save();
     return user;
 }
 
-const getAllUsersService = async () => {
-    return await User.find();
+const getAllUsersService = async (pagination) => {
+    return await User.find().skip((pagination.page - 1) * pagination.limit).limit(pagination.limit);
 }
 
 const createAddressService = async (userId, addressesArray) => {

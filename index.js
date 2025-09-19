@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const connectToDatabase = require("./src/database/database");
 const userRouter = require('./src/router/user.router');
 const authRouter = require('./src/router/auth.router');
@@ -7,12 +8,23 @@ const categoryRouter = require('./src/router/category.router');
 const cartRouter = require('./src/router/cart.router');
 const docsRouter = require('./src/router/docs.router');
 
+//cors
+
+
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors(
+  {
+    origin: 'http://localhost:4200',
+    methods: ['GET','POST','DELETE','UPDATE','PUT']
+  }
+));
+
+
 
 connectToDatabase();
 app.use('/api/user', userRouter);

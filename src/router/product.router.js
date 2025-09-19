@@ -14,7 +14,7 @@ const paginationMiddleware = require("../middleware/pagination.middleware");
 
 /**
  * @swagger
- * /api/product/products/create:
+ * /product/products/create:
  *   post:
  *     summary: Criar um novo produto
  *     tags: [Product]
@@ -25,23 +25,7 @@ const paginationMiddleware = require("../middleware/pagination.middleware");
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               price:
- *                 type: number
- *               category:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *               stock:
- *                 type: integer
+ *             $ref: '#/components/schemas/ProductCreate'
  *     responses:
  *       201:
  *         description: Produto criado
@@ -53,9 +37,9 @@ router.post("/products/create", authMiddleware ,validProduct, productController.
 
 /**
  * @swagger
- * /api/product/products:
+ * /product/products:
  *   get:
- *     summary: Buscar todos os produtos
+ *     summary: "Buscar todos os produtos"
  *     tags: [Product]
  *     parameters:
  *       - in: query
@@ -77,7 +61,7 @@ router.get("/products", paginationMiddleware, productController.getAllProductsCo
 
 /**
  * @swagger
- * /api/product/products/{id}:
+ * /product/products/{id}:
  *   get:
  *     summary: Buscar produto por ID
  *     tags: [Product]
@@ -99,7 +83,7 @@ router.get("/products/:id",validaIdParam, productController.getProductByIdContro
 
 /**
  * @swagger
- * /api/product/products/{id}:
+ * /product/products/{id}:
  *   put:
  *     summary: Atualizar produto por ID
  *     tags: [Product]
@@ -117,23 +101,7 @@ router.get("/products/:id",validaIdParam, productController.getProductByIdContro
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               price:
- *                 type: number
- *               category:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *               stock:
- *                 type: integer
+ *             $ref: '#/components/schemas/ProductCreate'
  *     responses:
  *       200:
  *         description: Produto atualizado
@@ -147,7 +115,7 @@ router.put("/products/:id", authMiddleware, validaIdParam, validProduct, product
 
 /**
  * @swagger
- * /api/product/products/{id}:
+ * /product/products/{id}:
  *   delete:
  *     summary: Deletar produto por ID
  *     tags: [Product]

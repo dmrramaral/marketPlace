@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "66df478a-2080-4488-b86d-41afd461c484",
+		"name": "Market C",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27104458"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GetAllUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketUser}}",
+							"host": [
+								"{{MarketUser}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindByid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketUser}}/68ae4d6eab898ed4e1591de0",
+							"host": [
+								"{{MarketUser}}"
+							],
+							"path": [
+								"68ae4d6eab898ed4e1591de0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"João Silva\",\r\n  \"email\": \"joao.silva1@email.com\",\r\n  \"password\": \"senhaSegura123*\",\r\n  \"image\": \"https://exemplo.com/imagem.jpg\"\r\n  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketUser}}/create",
+							"host": [
+								"{{MarketUser}}"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Adress",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"addresses\": [\r\n  {\r\n    \"street\": \"Rua das Flores, 123\",\r\n    \"city\": \"São Paulo\",\r\n    \"state\": \"SP\",\r\n    \"zipCode\": \"01001-000\",\r\n    \"country\": \"Brasil\",\r\n    \"createdAt\": \"2025-09-07T12:00:00Z\"\r\n  },\r\n  {\r\n    \"street\": \"Avenida Central, 456\",\r\n    \"city\": \"Rio de Janeiro\",\r\n    \"state\": \"RJ\",\r\n    \"zipCode\": \"20010-000\",\r\n    \"country\": \"Brasil\",\r\n    \"createdAt\": \"2025-09-07T12:00:00Z\"\r\n  },\r\n  {\r\n    \"street\": \"Praça da Liberdade, 789\",\r\n    \"city\": \"Belo Horizonte\",\r\n    \"state\": \"MG\",\r\n    \"zipCode\": \"30140-010\",\r\n    \"country\": \"Brasil\",\r\n    \"createdAt\": \"2025-09-07T12:00:00Z\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketUser}}/68b0ec51cff5d83fad0a0b25/address",
+							"host": [
+								"{{MarketUser}}"
+							],
+							"path": [
+								"68b0ec51cff5d83fad0a0b25",
+								"address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"pm.globals.set(\"authToken\", jsonData.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"joao.silva1@email.com\",\r\n  \"password\": \"senhaSegura123*\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketAuth}}/login",
+							"host": [
+								"{{MarketAuth}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketProduct}}/products",
+							"host": [
+								"{{MarketProduct}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketProduct}}/products/68bc992645c313b945c3dda8",
+							"host": [
+								"{{MarketProduct}}"
+							],
+							"path": [
+								"products",
+								"68bc992645c313b945c3dda8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Tênis Esportivo\",\r\n  \"description\": \"Tênis confortável para corrida\",\r\n  \"price\": 299.90,\r\n  \"category\": [\r\n    {\r\n      \"_id\": \"68bc987945c313b945c3dda1\"\r\n    }\r\n  ],\r\n  \"brand\": \"Nike\",\r\n  \"sizes\": [\"38\", \"39\", \"40\"],\r\n  \"colors\": [\"preto\", \"azul\"],\r\n  \"stock\": 15,\r\n  \"images\": [\r\n    \"https://exemplo.com/imagem1.jpg\",\r\n    \"https://exemplo.com/imagem2.jpg\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketProduct}}/products/create",
+							"host": [
+								"{{MarketProduct}}"
+							],
+							"path": [
+								"products",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Tênis Social\",\n  \"category\":[{\"_id\":\"68bc987945c313b945c3dda1\"}]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketProduct}}/products/68bc938cd8aaea767a89eb48",
+							"host": [
+								"{{MarketProduct}}"
+							],
+							"path": [
+								"products",
+								"68bc938cd8aaea767a89eb48"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MarketProduct}}/products/68bc938cd8aaea767a89eb48",
+							"host": [
+								"{{MarketProduct}}"
+							],
+							"path": [
+								"products",
+								"68bc938cd8aaea767a89eb48"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketCategory}}/categories",
+							"host": [
+								"{{MarketCategory}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketCategory}}/categories/68bc967dbbe61f60e4870a3a",
+							"host": [
+								"{{MarketCategory}}"
+							],
+							"path": [
+								"categories",
+								"68bc967dbbe61f60e4870a3a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Social\",\n    \"description\": \"Sapatos para eventos formais e trabalho\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketCategory}}/categories/create",
+							"host": [
+								"{{MarketCategory}}"
+							],
+							"path": [
+								"categories",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Sapatos para eventos formais e trabalho confortáveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketCategory}}/categories/68bc987945c313b945c3dda1",
+							"host": [
+								"{{MarketCategory}}"
+							],
+							"path": [
+								"categories",
+								"68bc987945c313b945c3dda1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MarketCategory}}/categories/68bc9743bbe61f60e4870a44",
+							"host": [
+								"{{MarketCategory}}"
+							],
+							"path": [
+								"categories",
+								"68bc9743bbe61f60e4870a44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "GetAllCart",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketCard}}/carts",
+							"host": [
+								"{{MarketCard}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MarketCard}}/carts/68bc967dbbe61f60e4870a3a",
+							"host": [
+								"{{MarketCard}}"
+							],
+							"path": [
+								"carts",
+								"68bc967dbbe61f60e4870a3a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\": [\n        {\"_id\": \"68bde8277397efaa6debfa71\" , \"quantity\": 3}\n    ],\n    \"user\": \"68ae4d6eab898ed4e1591de0\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketCard}}/carts/products",
+							"host": [
+								"{{MarketCard}}"
+							],
+							"path": [
+								"carts",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Sapatos para eventos formais e trabalho confortáveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MarketCard}}/carts/68bc987945c313b945c3dda1",
+							"host": [
+								"{{MarketCard}}"
+							],
+							"path": [
+								"carts",
+								"68bc987945c313b945c3dda1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MarketCard}}/carts/68bdc526253fcdf6628447fb",
+							"host": [
+								"{{MarketCard}}"
+							],
+							"path": [
+								"carts",
+								"68bdc526253fcdf6628447fb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"variable": [
+		{
+			"key": "MarketUser",
+			"value": "http://localhost:3000/api/user",
+			"type": "string"
+		},
+		{
+			"key": "MarketAuth",
+			"value": "http://localhost:3000/api/auth",
+			"type": "string"
+		},
+		{
+			"key": "MarketProduct",
+			"value": "http://localhost:3000/api/product",
+			"type": "string"
+		},
+		{
+			"key": "MarketCategory",
+			"value": "http://localhost:3000/api/category",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjBlYzUxY2ZmNWQ4M2ZhZDBhMGIyNSIsImFkbWluIjpmYWxzZSwiaWF0IjoxNzU3MTg4MjExLCJleHAiOjE3NTcyNzQ2MTF9.w1SU6CSmYlbhemUT4PYASm2s1Wip9vjPtRwwN21r1XY",
+			"type": "string"
+		},
+		{
+			"key": "MarketCard",
+			"value": "http://localhost:3000/api/cart",
+			"type": "string"
+		}
+	]
+}

@@ -12,7 +12,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 /**
  * @swagger
- * /api/cart/cart:
+ * /cart/cart:
  *   get:
  *     summary: Buscar carrinho do usuário autenticado
  *     tags: [Cart]
@@ -29,7 +29,7 @@ router.get('/cart', authMiddleware, cartController.getCartByUserController);
 
 /**
  * @swagger
- * /api/cart/carts:
+ * /cart/carts:
  *   get:
  *     summary: Buscar todos os carrinhos (admin)
  *     tags: [Cart]
@@ -44,7 +44,7 @@ router.get('/carts', authMiddleware, cartController.getAllCartsController);
 
 /**
  * @swagger
- * /api/cart/carts/products:
+ * /cart/carts/products:
  *   post:
  *     summary: Adicionar produtos ao carrinho
  *     tags: [Cart]
@@ -55,17 +55,7 @@ router.get('/carts', authMiddleware, cartController.getAllCartsController);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               products:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                     quantity:
- *                       type: integer
+ *             $ref: '#/components/schemas/CartProduct'
  *     responses:
  *       200:
  *         description: Produtos adicionados ao carrinho
@@ -77,7 +67,7 @@ router.post('/carts/products', authMiddleware, cartController.addProductToCartCo
 
 /**
  * @swagger
- * /api/cart/carts/products:
+ * /cart/carts/products:
  *   delete:
  *     summary: Remover produto do carrinho
  *     tags: [Cart]
@@ -88,10 +78,7 @@ router.post('/carts/products', authMiddleware, cartController.addProductToCartCo
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               productId:
- *                 type: string
+ *             $ref: '#/components/schemas/CartProduct'
  *     responses:
  *       200:
  *         description: Produto removido do carrinho
@@ -105,7 +92,7 @@ router.delete('/carts/products', authMiddleware, cartController.removeProductFro
 
 /**
  * @swagger
- * /api/cart/pay:
+ * /cart/pay:
  *   post:
  *     summary: Realizar pagamento do carrinho
  *     tags: [Cart]
