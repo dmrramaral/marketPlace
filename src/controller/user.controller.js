@@ -159,6 +159,26 @@ const deleteAddressController = () => async (req, res) => {
     }
 };
 
+//Buscar perfil do usuário autenticado
+const getUserProfileController = () => async (req, res) => {
+    try {
+        // O middleware de autenticação já disponibiliza req.user com os dados do token
+        const userId = req.user.id;
+        
+        const user = await userService.findByIdService(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+        
+        res.status(200).json({
+            message: 'Perfil do usuário recuperado com sucesso',
+            user: user
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     findByIdController,
     createUserController,
@@ -168,5 +188,6 @@ module.exports = {
     getAllUsersController,
     deleteFavoriteProductController,
     createAddressController,
-    deleteAddressController
+    deleteAddressController,
+    getUserProfileController
 };

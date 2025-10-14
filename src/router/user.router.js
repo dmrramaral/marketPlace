@@ -183,6 +183,36 @@ router.post('/:id/address',validationMiddleware.validaIdParam, validationMiddlew
  */ 
 router.get('/',authMiddleware,paginationMiddleware, userController.getAllUsersController(User));
 
+// Rota para buscar o perfil do usuário autenticado
+/**
+ * @swagger
+ * /user/profile:
+ *   get:
+ *     summary: Buscar o perfil do usuário autenticado
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "Perfil do usuário recuperado com sucesso"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: "Não autorizado. Token JWT ausente ou inválido."
+ *       404:
+ *         description: "Usuário não encontrado"
+ *       500:
+ *         description: "Erro interno do servidor"
+ */ 
+router.get('/profile', authMiddleware, userController.getUserProfileController());
+
 // Rota para buscar um usuário por ID
 /**
  * @swagger
