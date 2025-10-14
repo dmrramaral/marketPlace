@@ -64,10 +64,35 @@ const removeProductFromCartController = async (req, res) => {
     }
 };
 
+// Atualiza quantidade específica de produto no carrinho
+const updateProductQuantityController = async (req, res) => {
+    try {
+        const { productId, quantity } = req.body;
+        if (!productId || quantity === undefined || quantity < 0) {
+            return res.status(400).json({ error: 'ProductId e quantity são obrigatórios. Quantity deve ser >= 0.' });
+        }
+        
+        if (quantity === 0) {
+            // Se quantidade for 0, remove o produto
+            const cart = await CartService.removeProductFromCartService(req.user.id, productId);
+            if (!cart) {
+                return res.status(204).send(); // carrinho deletado
+            }
+            return res.status(200).json(cart);
+        }
+        
+        const cart = await CartService.updateProductQuantityService(req.user.id, productId, quantity);
+        res.status(200).json(cart);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getCartByUserController,
     getAllCartsController,
     addProductToCartController,
     removeProductFromCartController,
+    updateProductQuantityController,
     payCartController,
 };

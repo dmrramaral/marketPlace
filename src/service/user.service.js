@@ -33,6 +33,11 @@ const createUserService = async (userData) => {
     }
 
     const newUser = await new User(userData).save();
+    // Garante default redundante se algo vier sem role
+    if (!newUser.role) {
+        newUser.role = 'user';
+        await newUser.save();
+    }
     newUser.password = undefined;
     return newUser;
     

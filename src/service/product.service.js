@@ -21,8 +21,25 @@ const createProductService = async (productData) => {
     return await newProduct.save();
 }
 
-const getAllProductsService = async (pagination) => {
-    return await Product.find().limit(pagination.limit).skip(pagination.offset).populate('category', 'name').populate('reviews.user', 'name email');
+const getAllProductsService = async ({ page = 1, limit = 10, skip = 0, category } = {}) => {
+    const query = {};
+    if (category) {
+        // Campo category é um array de objetos com _id
+        query['category._id'] = category;
+    }
+
+    const [products, total] = await Promise.all([
+        Product.find(query)
+            .skip(skip)
+            .limit(limit)
+            .populate('category', 'name')
+            .populate('reviews.user', 'name email'),
+        Product.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(total / limit) || 1;
+
+    return { products, page, limit, total, totalPages, category: category || null };
 }
 
 const findProductByIdService = async (id) => {

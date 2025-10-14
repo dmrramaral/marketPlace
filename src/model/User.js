@@ -23,7 +23,9 @@ const UserSchema = new mongoose.Schema({
             createdAt: { type: Date, default: Date.now },
         }
     ],
-    admin: { type: Boolean, default: false , required: true }
+    // Campo legado 'admin' mantido para compatibilidade, porém substituído por 'role'
+    admin: { type: Boolean, default: false , required: true },
+    role: { type: String, enum: ['admin', 'user', 'manager'], default: 'user', required: true }
 });
 
 UserSchema.pre('save', async function (next) {

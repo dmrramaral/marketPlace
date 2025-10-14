@@ -131,11 +131,48 @@ const payCartService = async (userId, paymentMethod, transactionId) => {
     return populatedCart;
 };
 
+// Atualiza quantidade específica de produto no carrinho
+const updateProductQuantityService = async (userId, productId, quantity) => {
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) throw new Error('Cart not found');
+
+    const productIndex = cart.products.findIndex(p => p._id.toString() === productId);
+    if (productIndex === -1) throw new Error('Product not found in cart');
+
+    // Verificar stock
+    const product = await Product.findById(productId);
+    if (!product) throw new Error('Product not found');
+    if (product.stock < quantity) throw new Error(`Insufficient stock for product: ${productId}`);
+
+    // Atualizar quantidade
+    cart.products[productIndex].quantity = quantity;
+
+    // Recalcular total
+    const cartProductIds = cart.products.map(p => p._id.toString());
+    const cartProducts = await Product.find({ _id: { $in: cartProductIds } });
+    const cartProductsMap = cartProducts.reduce((m, p) => { m[p._id.toString()] = p; return m; }, {});
+
+    cart.totalPrice = 0;
+    for (const p of cart.products) {
+        const prod = cartProductsMap[p._id.toString()];
+        if (!prod) throw new Error(`Product data missing when calculating total: ${p._id}`);
+        cart.totalPrice += prod.price * p.quantity;
+    }
+
+    cart.frete = calcularFrete(cart);
+    await cart.save();
+
+    let populatedCart = await cart.populate('products._id');
+    populatedCart = await populatedCart.populate('user');
+    return populatedCart;
+};
+
 module.exports = {
     findByIdService,
     findAllService,
     findCartByUserService,
     addProductsArrayToCartService,
     removeProductFromCartService,
+    updateProductQuantityService,
     payCartService,
 };

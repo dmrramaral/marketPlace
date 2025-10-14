@@ -92,6 +92,34 @@ router.delete('/carts/products', authMiddleware, cartController.removeProductFro
 
 /**
  * @swagger
+ * /cart/carts/products:
+ *   put:
+ *     summary: Atualizar quantidade de produto no carrinho
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *               quantity:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Quantidade atualizada
+ *       400:
+ *         description: Erro ao atualizar quantidade
+ */
+// Rota para atualizar quantidade de produto no carrinho
+router.put('/carts/products', authMiddleware, cartController.updateProductQuantityController);
+
+/**
+ * @swagger
  * /cart/pay:
  *   post:
  *     summary: Realizar pagamento do carrinho
