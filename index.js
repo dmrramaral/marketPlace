@@ -14,6 +14,11 @@ const orderRouter = require('./src/router/order.router');
 
 require('dotenv').config();
 
+console.error('🚀 Iniciando servidor...');
+console.error('📝 NODE_ENV:', process.env.NODE_ENV);
+console.error('📝 MONGODB_URI:', process.env.MONGODB_URI ? '✅ Configurado' : '❌ Não configurado');
+console.error('📝 FRONTEND_URL:', process.env.FRONTEND_URL || '❌ Não configurado');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -65,7 +70,99 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+// �️ Middleware adicional para garantir headers CORS em TODAS as respostas
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Lista de origens permitidas
+  const allowed = [
+    'http://localhost:4200',
+    'http://localhost:3000',
+    'https://sushi-app-ashen.vercel.app',
+    process.env.FRONTEND_URL
+  ];
+  
+  // Verifica se a origem está permitida ou se é um domínio *.vercel.app
+  if (allowed.includes(origin) || (origin && /https:\/\/.*\.vercel\.app$/.test(origin))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    console.error(`✅ Headers CORS adicionados para: ${origin}`);
+  }
+  
+  // Responder requisições OPTIONS (preflight) imediatamente
+  if (req.method === 'OPTIONS') {
+    console.error(`⚡ Respondendo preflight OPTIONS para ${req.url}`);
+    return res.sendStatus(204);
+  }
+  
+  next();
+});
 
+// �🔍 Middleware de Debug - Ver todas as requisições
+app.use((req, res, next) => {
+  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.error(`🕐 ${new Date().toISOString()}`);
+  console.error(`📥 ${req.method} ${req.url}`);
+  console.error(`🌐 Origin: ${req.headers.origin || 'Sem origem'}`);
+  console.error(`🔑 User-Agent: ${req.headers['user-agent']}`);
+  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  next();
+});
+
+// 🏥 Health Check - Endpoint de teste
+app.get('/health', (req, res) => {
+  console.error('🏥 Health check chamado!');
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    message: 'Backend funcionando! ✅'
+  });
+});
+
+// 🧪 Endpoint de teste de CORS
+app.get('/test-cors', (req, res) => {
+  console.error('🧪 Test CORS chamado!');
+  console.error('Origin da requisição:', req.headers.origin);
+  res.json({ 
+    message: 'Se você recebeu isso, o CORS está OK!',
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 🔍 Endpoint de diagnóstico completo
+app.get('/api/diagnostico', (req, res) => {
+  console.error('🔍 Diagnóstico solicitado');
+  const diagnostico = {
+    servidor: {
+      status: 'online ✅',
+      timestamp: new Date().toISOString(),
+      nodeEnv: process.env.NODE_ENV,
+      port: port
+    },
+    cors: {
+      origemRequisicao: req.headers.origin || 'Nenhuma origem',
+      frontendUrlConfigurado: process.env.FRONTEND_URL || 'Não configurado',
+      origensPermitidas: [
+        'http://localhost:4200',
+        'http://localhost:3000',
+        'https://sushi-app-ashen.vercel.app',
+        process.env.FRONTEND_URL,
+        'Regex: *.vercel.app'
+      ]
+    },
+    bancodados: {
+      mongodbUri: process.env.MONGODB_URI ? '✅ Configurado' : '❌ Não configurado'
+    },
+    headers: req.headers
+  };
+  
+  console.error('📋 Diagnóstico:', JSON.stringify(diagnostico, null, 2));
+  res.json(diagnostico);
+});
 
 connectToDatabase();
 app.use('/api/user', userRouter);
