@@ -3,17 +3,17 @@ const productService = require('../service/product.service');
 //Criar novo produto
 const createProductController = () => async (req, res) => {
     try {
-        const { name, description, price, category, brand, sizes, colors, stock, images } = req.body;
+        const { name, description, price, category, brand, sizes, colors, stock, images, image } = req.body;
         // Validações básicas
         if (!name || !description || !price || !category || !stock) {
             return res.status(400).json({ error: 'Nome, descrição, preço, categoria e estoque são obrigatórios' });
         }
         // Criar o produto
-        const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images });
+        const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images, image });
         res.status(201).json(newProduct);
     } catch (error) {
         console.log(error);
-         return res.status(400).json({ message: 'Senha ou Usuário incorreto' });
+         return res.status(400).json({ message: error.message || 'Erro ao criar produto' });
     }
 };
 
@@ -44,19 +44,27 @@ const getProductByIdController = () => async (req, res) => {
 //Atualizar produto por ID
 const updateProductController = () => async (req, res) => {
     try {
-        const { name, description, price, category, brand, sizes, colors, stock, images } = req.body;
+        const { name, description, price, category, brand, sizes, colors, stock, images, image } = req.body;
+        
+        console.log('📦 Backend recebeu UPDATE:', req.body);
+        console.log('🖼️ Image field:', image);
+        console.log('🖼️ Images field:', images);
 
         // Validação básica
-        if (!name && !description && !price && !category && !brand && !sizes && !colors && stock === undefined && !images) {
+        if (!name && !description && !price && !category && !brand && !sizes && !colors && stock === undefined && !images && !image) {
             return res.status(400).json({ error: 'Pelo menos um campo deve ser fornecido para atualização' });
         }
 
-        const updatedProduct = await productService.updateProductService(req.params.id, { name, description, price, category, brand, sizes, colors, stock, images });
+        const updatedProduct = await productService.updateProductService(req.params.id, { name, description, price, category, brand, sizes, colors, stock, images, image });
+        
+        console.log('✅ Produto atualizado:', updatedProduct);
+        
         if (!updatedProduct) {
             return res.status(404).json({ error: 'Produto não encontrado' });
         }
         res.json(updatedProduct);
     } catch (error) {
+        console.error('❌ Erro ao atualizar:', error);
         res.status(400).json({ error: error.message });
     }
 };

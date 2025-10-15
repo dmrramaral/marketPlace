@@ -107,7 +107,13 @@ const addFavoriteProductController = () => async (req, res) => {
 const getAllUsersController = () => async (req, res) => {
     try {
         const users = await userService.getAllUsersService(req.pagination);
-        res.json(users);
+        // Retorna no formato esperado pelo frontend
+        res.json({ 
+            users,
+            page: req.pagination.page,
+            limit: req.pagination.limit,
+            total: users.length
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

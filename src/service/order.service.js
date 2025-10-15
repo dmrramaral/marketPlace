@@ -60,4 +60,55 @@ async function getOrderByIdService(userId, orderId) {
   return order;
 }
 
-module.exports = { createOrderFromCartService, getOrdersByUserService, getOrderByIdService };
+// Admin: Buscar todos os pedidos com paginação
+async function getAllOrdersService(page = 1, limit = 10) {
+  const skip = (page - 1) * limit;
+  const orders = await Order.find()
+    .populate('items.product')
+    .populate('user', 'name email')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+  
+  const total = await Order.countDocuments();
+  
+  return {
+    orders,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+    totalOrders: total
+  };
+}
+
+// Admin: Atualizar status do pedido
+async function updateOrderStatusService(orderId, status) {
+  const validStatuses = ['pending', 'confirmed', 'preparing', 'delivering', 'completed', 'cancelled'];
+  if (!validStatuses.includes(status)) {
+    throw new Error('Status inválido');
+  }
+
+  const order = await Order.findByIdAndUpdate(
+    orderId, 
+    { status, updatedAt: new Date() },
+    { new: true }
+  ).populate('items.product').populate('user');
+
+  if (!order) throw new Error('Pedido não encontrado');
+  return order;
+}
+
+// Admin: Deletar pedido
+async function deleteOrderService(orderId) {
+  const order = await Order.findByIdAndDelete(orderId);
+  if (!order) throw new Error('Pedido não encontrado');
+  return order;
+}
+
+module.exports = { 
+  createOrderFromCartService, 
+  getOrdersByUserService, 
+  getOrderByIdService,
+  getAllOrdersService,
+  updateOrderStatusService,
+  deleteOrderService
+};
