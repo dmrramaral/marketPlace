@@ -21,6 +21,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:4200',
   'http://localhost:3000',
+  'https://sushi-app-ashen.vercel.app/', // URL do frontend na Vercel (substitua pela sua)
   process.env.FRONTEND_URL, // URL do frontend na Vercel (configurar no .env)
   /https:\/\/.*\.vercel\.app$/, // Aceita qualquer subdomínio do Vercel
 ];
