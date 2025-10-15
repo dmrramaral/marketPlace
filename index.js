@@ -134,14 +134,19 @@ app.get('/test-cors', (req, res) => {
 });
 
 // 🔍 Endpoint de diagnóstico completo
-app.get('/api/diagnostico', (req, res) => {
+app.get('/api/diagnostico', async (req, res) => {
   console.error('🔍 Diagnóstico solicitado');
+  
+  // Importar mongoose para verificar estado
+  const mongoose = require('mongoose');
+  
   const diagnostico = {
     servidor: {
       status: 'online ✅',
       timestamp: new Date().toISOString(),
       nodeEnv: process.env.NODE_ENV,
-      port: port
+      port: port,
+      isVercel: !!process.env.VERCEL
     },
     cors: {
       origemRequisicao: req.headers.origin || 'Nenhuma origem',
@@ -155,7 +160,9 @@ app.get('/api/diagnostico', (req, res) => {
       ]
     },
     bancodados: {
-      mongodbUri: process.env.MONGODB_URI ? '✅ Configurado' : '❌ Não configurado'
+      mongodbUri: process.env.MONGODB_URI ? '✅ Configurado' : '❌ Não configurado',
+      readyState: mongoose.connection.readyState,
+      readyStateDescricao: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown'
     },
     headers: req.headers
   };
@@ -164,7 +171,20 @@ app.get('/api/diagnostico', (req, res) => {
   res.json(diagnostico);
 });
 
-connectToDatabase();
+// 🔗 Middleware para garantir conexão com banco antes de processar rotas
+app.use(async (req, res, next) => {
+  try {
+    await connectToDatabase();
+    next();
+  } catch (error) {
+    console.error('❌ Erro ao conectar ao banco:', error);
+    res.status(503).json({ 
+      error: 'Serviço temporariamente indisponível',
+      message: 'Não foi possível conectar ao banco de dados'
+    });
+  }
+});
+
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/category', categoryRouter);
@@ -177,8 +197,27 @@ app.get("/", (req, res) => {
   res.send("Bem-vindo ao servidor de market Place da Loja de calcados!");
 });
 
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
+// 🚀 Inicializar servidor e conectar ao banco
+async function startServer() {
+  try {
+    // Conectar ao banco ANTES de iniciar o servidor
+    await connectToDatabase();
+    
+    app.listen(port, () => {
+      console.log(`✅ Servidor rodando na porta ${port}`);
+      console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+    });
+  } catch (error) {
+    console.error('❌ Erro ao iniciar servidor:', error);
+    process.exit(1);
+  }
+}
 
-
+// Para Vercel (serverless), exportar o app diretamente
+if (process.env.VERCEL) {
+  console.log('🔷 Modo Vercel Serverless - App exportado');
+  module.exports = app;
+} else {
+  // Para desenvolvimento local, iniciar servidor normalmente
+  startServer();
+}
