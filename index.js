@@ -21,28 +21,39 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:4200',
   'http://localhost:3000',
-  'https://sushi-app-ashen.vercel.app/', // URL do frontend na Vercel (substitua pela sua)
+  'https://sushi-app-ashen.vercel.app', // URL do frontend na Vercel (SEM barra no final!)
   process.env.FRONTEND_URL, // URL do frontend na Vercel (configurar no .env)
   /https:\/\/.*\.vercel\.app$/, // Aceita qualquer subdomínio do Vercel
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('🔍 CORS: Origem da requisição:', origin);
+    
     // Permite requisições sem origem (mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('✅ CORS: Requisição sem origem - PERMITIDA');
+      return callback(null, true);
+    }
     
     // Verifica se a origem está na lista permitida ou match com regex
     const isAllowed = allowedOrigins.some(allowedOrigin => {
       if (allowedOrigin instanceof RegExp) {
-        return allowedOrigin.test(origin);
+        const matches = allowedOrigin.test(origin);
+        console.log(`🧪 CORS: Testando regex ${allowedOrigin} contra ${origin}: ${matches}`);
+        return matches;
       }
-      return allowedOrigin === origin;
+      const matches = allowedOrigin === origin;
+      console.log(`🧪 CORS: Testando ${allowedOrigin} === ${origin}: ${matches}`);
+      return matches;
     });
     
     if (isAllowed) {
+      console.log('✅ CORS: Origem PERMITIDA:', origin);
       callback(null, true);
     } else {
-      console.log('❌ Origem bloqueada pelo CORS:', origin);
+      console.log('❌ CORS: Origem BLOQUEADA:', origin);
+      console.log('📋 CORS: Origens permitidas:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
