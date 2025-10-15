@@ -100,16 +100,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// �🔍 Middleware de Debug - Ver todas as requisições
-app.use((req, res, next) => {
-  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.error(`🕐 ${new Date().toISOString()}`);
-  console.error(`📥 ${req.method} ${req.url}`);
-  console.error(`🌐 Origin: ${req.headers.origin || 'Sem origem'}`);
-  console.error(`🔑 User-Agent: ${req.headers['user-agent']}`);
-  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  next();
-});
 
 // 🏥 Health Check - Endpoint de teste
 app.get('/health', (req, res) => {
@@ -133,43 +123,6 @@ app.get('/test-cors', (req, res) => {
   });
 });
 
-// 🔍 Endpoint de diagnóstico completo
-app.get('/api/diagnostico', async (req, res) => {
-  console.error('🔍 Diagnóstico solicitado');
-  
-  // Importar mongoose para verificar estado
-  const mongoose = require('mongoose');
-  
-  const diagnostico = {
-    servidor: {
-      status: 'online ✅',
-      timestamp: new Date().toISOString(),
-      nodeEnv: process.env.NODE_ENV,
-      port: port,
-      isVercel: !!process.env.VERCEL
-    },
-    cors: {
-      origemRequisicao: req.headers.origin || 'Nenhuma origem',
-      frontendUrlConfigurado: process.env.FRONTEND_URL || 'Não configurado',
-      origensPermitidas: [
-        'http://localhost:4200',
-        'http://localhost:3000',
-        'https://sushi-app-ashen.vercel.app',
-        process.env.FRONTEND_URL,
-        'Regex: *.vercel.app'
-      ]
-    },
-    bancodados: {
-      mongodbUri: process.env.MONGODB_URI ? '✅ Configurado' : '❌ Não configurado',
-      readyState: mongoose.connection.readyState,
-      readyStateDescricao: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown'
-    },
-    headers: req.headers
-  };
-  
-  console.error('📋 Diagnóstico:', JSON.stringify(diagnostico, null, 2));
-  res.json(diagnostico);
-});
 
 // 🔗 Middleware para garantir conexão com banco antes de processar rotas
 app.use(async (req, res, next) => {
