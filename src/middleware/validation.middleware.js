@@ -19,6 +19,38 @@ const validaUser = (req, res, next) => {
     next();
 };
 
+// Middleware para validação de atualização de usuário (campos opcionais)
+const validaUpdateUser = (req, res, next) => {
+    console.log('🔍 validaUpdateUser - Validando body:', req.body);
+    let errors = [];
+    const { name, email, password, admin, role } = req.body;
+    
+    // Validações apenas se os campos forem enviados
+    if (name !== undefined && (typeof name !== 'string' || name.trim().length === 0)) {
+        errors.push('Name must be a non-empty string.');
+    }
+    if (email !== undefined && (typeof email !== 'string' || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))) {
+        errors.push('Email must be valid.');
+    }
+    if (password !== undefined && (typeof password !== 'string' || password.length < 6)) {
+        errors.push('Password must be at least 6 characters long.');
+    }
+    if (admin !== undefined && typeof admin !== 'boolean') {
+        errors.push('Admin must be a boolean value.');
+    }
+    if (role !== undefined && !['admin', 'user', 'manager'].includes(role)) {
+        errors.push('Role must be one of: admin, user, manager.');
+    }
+    
+    if (errors.length > 0) {
+        console.log('❌ validaUpdateUser - Erros encontrados:', errors);
+        return res.status(400).json({ errors });
+    }
+    
+    console.log('✅ validaUpdateUser - Validação passou');
+    next();
+};
+
 const  validProduct = (req, res, next) => {
     let errors = [];
     const { name, description, price, stock } = req.body;
@@ -76,7 +108,9 @@ const validIdbody = (req, res, next) => {
 
 
 
-module.exports = { validaUser,
+module.exports = { 
+    validaUser,
+    validaUpdateUser,
     validProduct,
     validAddresses,
     validaIdParam,

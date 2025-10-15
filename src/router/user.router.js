@@ -280,7 +280,7 @@ router.get('/:id',authMiddleware, userController.findByIdController(User) );
  *       404:
  *         description: "Usuário não encontrado"
  */
-router.put('/:id',authMiddleware,validationMiddleware.validaIdParam,validationMiddleware.validaUser, userController.updateUserController(User));
+router.put('/:id',authMiddleware,validationMiddleware.validaIdParam,validationMiddleware.validaUpdateUser, userController.updateUserController(User));
 
 // Rota para deletar um usuário por ID
 /**

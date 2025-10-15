@@ -55,23 +55,49 @@ const createUserController = () => async (req, res) => {
 //Atualizar usuário por ID
 const updateUserController = () => async (req, res) => {
     try {
-    const { name, email, password, image, addresses, admin, role } = req.body;
+        console.log('📥 Recebendo requisição PUT /user/:id');
+        console.log('   User ID:', req.params.id);
+        console.log('   Body:', req.body);
+        
+        const { name, email, password, image, addresses, admin, role } = req.body;
 
         // Validação básica
-        if (!name && !email && !password && !image && !adress && admin === undefined) {
+        if (!name && !email && !password && !image && !addresses && admin === undefined && !role) {
+            console.log('❌ Validação falhou: nenhum campo fornecido');
             return res.status(400).json({ error: 'Pelo menos um campo deve ser fornecido para atualização' });
         }
 
-    let updateData = { name, email, password, image, addresses, admin };
-    if (role && ['admin', 'user', 'manager'].includes(role)) {
-        updateData.role = role;
-    }
-    const updatedUser = await userService.updateUserService(req.params.id, updateData);
+        // Criar updateData apenas com campos que foram fornecidos
+        let updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (email !== undefined) updateData.email = email;
+        if (password !== undefined) updateData.password = password;
+        if (image !== undefined) updateData.image = image;
+        if (addresses !== undefined) updateData.addresses = addresses;
+        if (admin !== undefined) updateData.admin = admin;
+        
+        if (role) {
+            if (['admin', 'user', 'manager'].includes(role)) {
+                updateData.role = role;
+                console.log('✅ Role válido:', role);
+            } else {
+                console.log('❌ Role inválido:', role);
+                return res.status(400).json({ error: 'Role inválido. Use: admin, user ou manager' });
+            }
+        }
+        
+        console.log('📝 Dados para atualizar:', updateData);
+        
+        const updatedUser = await userService.updateUserService(req.params.id, updateData);
         if (!updatedUser) {
+            console.log('❌ Usuário não encontrado');
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
+        
+        console.log('✅ Usuário atualizado com sucesso');
         res.json(updatedUser);
     } catch (error) {
+        console.error('❌ Erro no updateUserController:', error.message);
         res.status(400).json({ error: error.message });
     } 
 };

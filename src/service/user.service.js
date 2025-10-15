@@ -47,10 +47,24 @@ const updateUserService = async (id, userData) => {
     if (!id || !userData) {
         throw new Error('ID e dados do usuário são obrigatórios');
     }
-    const updatedUser = await User.findByIdAndUpdate(id, userData, { new: true });
+    console.log('🔧 updateUserService - ID:', id);
+    console.log('🔧 updateUserService - userData:', userData);
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        id, 
+        userData, 
+        { 
+            new: true, 
+            runValidators: true,
+            context: 'query'
+        }
+    );
+    
     if (!updatedUser) {
         throw new Error('Usuário não encontrado');
     }
+    
+    console.log('✅ updateUserService - Usuário atualizado:', updatedUser);
     return updatedUser;
 }
 

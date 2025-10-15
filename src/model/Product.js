@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema({
         createdAt: { type: Date, default: Date.now }
      }],
     brand: { type: String },
-    sizes: [{ type: String }],
+    //sizes: [{ type: String }],
     colors: [{ type: String }],
     stock: { type: Number, required: true },
     images: [{ type: String }],
