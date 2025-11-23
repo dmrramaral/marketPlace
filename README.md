@@ -206,9 +206,11 @@ Para usar a autenticação no Swagger:
   "description": "Hambúrguer artesanal com bacon crocante",
   "price": 25.90,
   "category": ["65abc123def456789012345"],
-  "stock": 50
+  "stock": 50,
+  "ingredients": ["Pão", "Hambúrguer", "Bacon", "Queijo", "Alface", "Tomate"]
 }
 ```
+- Nota: O campo `ingredients` é opcional. Use-o para produtos como lanches que possuem ingredientes. Para bebidas e outros produtos, o campo pode ser omitido.
 
 #### Listar Todos os Produtos
 - **GET** `/api/product/products`
@@ -237,9 +239,11 @@ Para usar a autenticação no Swagger:
   "description": "Hambúrguer artesanal com bacon defumado",
   "price": 29.90,
   "category": ["65abc123def456789012345"],
-  "stock": 30
+  "stock": 30,
+  "ingredients": ["Pão brioche", "Hambúrguer artesanal", "Bacon defumado", "Queijo cheddar"]
 }
 ```
+- Nota: Todos os campos são opcionais. O campo `ingredients` pode ser adicionado ou atualizado conforme necessário.
 
 #### Deletar Produto
 - **DELETE** `/api/product/products/:id`

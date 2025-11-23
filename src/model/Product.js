@@ -13,6 +13,7 @@ const ProductSchema = new mongoose.Schema({
     colors: [{ type: String }],
     stock: { type: Number, required: true },
     images: [{ type: String }],
+    ingredients: [{ type: String }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     ratings: { type: Number, default: 0 },
