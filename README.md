@@ -1,12 +1,17 @@
-# MarketPlace API
+# Wallace Lanches - API de Gerenciamento
 
-> API simples de exemplo para um marketplace de calçados. Contém endpoints para autenticação, usuários, categorias, produtos, carrinho e tickets.
+> API completa para gerenciamento de lanchonete. Sistema com autenticação, usuários, produtos (lanches e bebidas), categorias, carrinho de compras e pedidos.
+
+## 🍔 Sobre o Wallace Lanches
+
+Sistema de gerenciamento completo para lanchonete, desenvolvido com tecnologias modernas e arquitetura RESTful. Ideal para integração com aplicações frontend web ou mobile.
 
 ## Tecnologias
 - Node.js + Express
 - MongoDB + Mongoose
 - Swagger (swagger-jsdoc + swagger-ui-express)
 - JWT para autenticação
+- bcrypt para criptografia de senhas
 
 ## Requisitos
 - Node.js 16+ (recomendado)
@@ -26,8 +31,8 @@ Crie um arquivo `.env` na raiz com as seguintes variáveis básicas:
 
 ```
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/marketplace
-JWT_SECRET=algumsegredodetoken
+MONGODB_URI=mongodb://localhost:27017/wallace-lanches
+JWT_SECRET=sua_chave_secreta_aqui
 ```
 
 3. Rodar em desenvolvimento:
@@ -38,110 +43,454 @@ npm run dev
 
 O servidor irá subir por padrão em `http://localhost:3000` (ou conforme `PORT`).
 
-## Rotas principais
+## 📚 Documentação (Swagger)
 
-O projeto usa prefixos nas rotas montadas em `index.js`:
-
-- `/api/auth` — autenticação (login/registro)
-- `/api/user` — usuários
-- `/api/product` — produtos
-- `/api/category` — categorias
-- `/api/cart` — carrinho
-- `/docs` — Swagger UI
-
-Exemplo de rota pública (health): `GET /`
-
-## Documentação (Swagger)
-
-Após subir o servidor, abra a documentação em:
+Após subir o servidor, abra a documentação interativa em:
 
 ```
 http://localhost:3000/docs/api-docs
 ```
 
-Os schemas principais foram definidos em `src/router/docs.router.js` e os JSDoc por endpoint estão nos arquivos dentro de `src/router/`.
+Para usar a autenticação no Swagger:
+1. Faça login em `/api/auth/login`
+2. Copie o token JWT retornado
+3. Clique em "Authorize" no Swagger UI
+4. Cole o token no formato: `Bearer <seu-token>`
 
-Para usar a opção Authorize (Bearer token) na UI do Swagger, copie o token JWT obtido em `/api/auth/login` e clique em Authorize > `Bearer <token>`.
+## Wallace Lanches
 
-## Postman
+## 📚 Documentação (Swagger)
 
-Há uma coleção de Postman no repositório: `marketplace.postman_collection.json`. Use as variáveis:
+Após subir o servidor, abra a documentação interativa em:
 
-- `{{baseUrl}}` — ex: `http://localhost:3000`
-- `{{jwt}}` — token JWT retornado no login
-
-Exemplos incluídos na coleção:
-- Auth / Login
-- User - Create
-- User - Get All
-- Product - Create / List / GetById
-- Category - Create / List
-- Cart - Add Products / Get My Cart / Pay
-
-## Formatos esperados (exemplos)
-
-- Criar usuário (POST /api/user/create):
-
-```json
-{
-    "name": "João Silva",
-    "email": "user@example.com",
-    "password": "Senha123!",
-    "addresses": [ { "street": "Rua A, 123", "city": "Cidade", "state": "SP", "zipCode": "01234-567", "country": "BR" } ]
-}
+```
+http://localhost:3000/docs/api-docs
 ```
 
-- Criar produto (POST /api/product/products/create) — enviar `category` como array de ids (recomendado):
-
-```json
-{
-    "name": "Tênis Exemplo",
-    "description": "Tênis confortável",
-    "price": 199.9,
-    "category": [ "68abcd1234ef567890abcdef" ],
-    "stock": 10
-}
-```
-
-- Adicionar produtos ao carrinho (POST /api/cart/carts/products):
-
-```json
-{
-    "products": [ { "_id": "<productId>", "quantity": 2 } ]
-}
-```
-
-## Boas práticas e notas
-
-- Prefira enviar referências (`ObjectId`) para relacionamentos e usar `.populate()` no retorno quando precisar do documento completo.
-- Os schemas para requisição/resposta estão centralizados em `src/router/docs.router.js` para evitar duplicação nos JSDoc dos routers.
-- Valide os ids e os formatos no cliente antes de enviar (ex.: `validaIdParam`, `validation.middleware`).
-
-## Próximos passos recomendados
-
-- Adicionar testes (jest + supertest) para endpoints críticos.
-- Incluir middlewares de segurança: `helmet`, `express-rate-limit`.
-- Implementar integração com gateway de pagamento (ou mock de pagamento) para o fluxo de tickets.
-
-## Contato
-
-Projeto mantido por: dmrramaral
-
-# marketPlace
-
-<div align="center">
-    <h1>🛒 marketPlace</h1>
-    <p>Backend de uma loja de sapatos feito com <b>Node.js</b>, <b>Express</b> e <b>MongoDB</b></p>
-    <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />
-    <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
-    <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
-    <br>
-    <img src="https://img.shields.io/github/license/dmrramaral/marketPlace?style=for-the-badge" />
-</div>
+Para usar a autenticação no Swagger:
+1. Faça login em `/api/auth/login`
+2. Copie o token JWT retornado
+3. Clique em "Authorize" no Swagger UI
+4. Cole o token no formato: `Bearer <seu-token>`
 
 ---
 
-## 📦 Estrutura do Projeto
+## 🚀 Rotas da API - Guia Completo para Frontend
+
+### 🔐 Autenticação
+
+#### Login
+- **POST** `/api/auth/login`
+- Descrição: Realiza autenticação do usuário e retorna token JWT
+- Autenticação: Não requerida
+- Body:
+```json
+{
+  "email": "usuario@email.com",
+  "password": "Senha123!"
+}
+```
+- Resposta (200):
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+---
+
+### 👤 Usuários
+
+#### Criar Usuário
+- **POST** `/api/user/create`
+- Descrição: Cria um novo usuário no sistema
+- Autenticação: Não requerida
+- Body:
+```json
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "Senha123!",
+  "addresses": [
+    {
+      "street": "Rua das Flores, 123",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01234-567",
+      "country": "BR"
+    }
+  ]
+}
+```
+
+#### Buscar Perfil do Usuário Autenticado
+- **GET** `/api/user/profile`
+- Descrição: Retorna dados do usuário logado
+- Autenticação: Bearer Token
+- Headers: `Authorization: Bearer <token>`
+
+#### Listar Todos os Usuários
+- **GET** `/api/user`
+- Descrição: Lista todos os usuários (com paginação)
+- Autenticação: Bearer Token
+- Query Params: 
+  - `page` (opcional): Número da página (padrão: 1)
+  - `limit` (opcional): Itens por página (padrão: 10)
+- Exemplo: `/api/user?page=1&limit=10`
+
+#### Buscar Usuário por ID
+- **GET** `/api/user/:id`
+- Descrição: Retorna dados de um usuário específico
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+
+#### Atualizar Usuário
+- **PUT** `/api/user/:id`
+- Descrição: Atualiza dados de um usuário
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+- Body:
+```json
+{
+  "name": "João Silva Atualizado",
+  "email": "joao.novo@email.com"
+}
+```
+
+#### Deletar Usuário
+- **DELETE** `/api/user/:id`
+- Descrição: Remove um usuário do sistema
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+
+#### Adicionar Produto aos Favoritos
+- **POST** `/api/user/:id/favorites`
+- Descrição: Adiciona um produto à lista de favoritos do usuário
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+- Body:
+```json
+{
+  "productId": "65abc123def456789012345"
+}
+```
+
+#### Remover Produto dos Favoritos
+- **DELETE** `/api/user/:id/favorites`
+- Descrição: Remove um produto da lista de favoritos
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+- Body:
+```json
+{
+  "productId": "65abc123def456789012345"
+}
+```
+
+#### Adicionar Endereço ao Usuário
+- **POST** `/api/user/:id/address`
+- Descrição: Adiciona um novo endereço ao usuário
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do usuário
+- Body:
+```json
+{
+  "addresses": [
+    {
+      "street": "Av. Paulista, 1000",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-100",
+      "country": "BR"
+    }
+  ]
+}
+```
+
+---
+
+### 🍔 Produtos (Lanches e Bebidas)
+
+#### Criar Produto
+- **POST** `/api/product/products/create`
+- Descrição: Cria um novo produto (lanche, bebida, etc.)
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "name": "X-Bacon Especial",
+  "description": "Hambúrguer artesanal com bacon crocante",
+  "price": 25.90,
+  "category": ["65abc123def456789012345"],
+  "stock": 50
+}
+```
+
+#### Listar Todos os Produtos
+- **GET** `/api/product/products`
+- Descrição: Lista todos os produtos disponíveis (com paginação)
+- Autenticação: Não requerida
+- Query Params:
+  - `page` (opcional): Número da página
+  - `limit` (opcional): Itens por página
+- Exemplo: `/api/product/products?page=1&limit=20`
+
+#### Buscar Produto por ID
+- **GET** `/api/product/products/:id`
+- Descrição: Retorna detalhes de um produto específico
+- Autenticação: Não requerida
+- Parâmetros: `id` - ID do produto
+
+#### Atualizar Produto
+- **PUT** `/api/product/products/:id`
+- Descrição: Atualiza informações de um produto
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do produto
+- Body:
+```json
+{
+  "name": "X-Bacon Premium",
+  "description": "Hambúrguer artesanal com bacon defumado",
+  "price": 29.90,
+  "category": ["65abc123def456789012345"],
+  "stock": 30
+}
+```
+
+#### Deletar Produto
+- **DELETE** `/api/product/products/:id`
+- Descrição: Remove um produto do sistema
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do produto
+
+---
+
+### 📂 Categorias
+
+#### Criar Categoria
+- **POST** `/api/category/categories/create`
+- Descrição: Cria uma nova categoria de produtos
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "name": "Lanches",
+  "description": "Hambúrgueres e sanduíches"
+}
+```
+
+#### Listar Todas as Categorias
+- **GET** `/api/category/categories`
+- Descrição: Lista todas as categorias disponíveis
+- Autenticação: Não requerida
+
+#### Buscar Categoria por ID
+- **GET** `/api/category/categories/:id`
+- Descrição: Retorna detalhes de uma categoria específica
+- Autenticação: Não requerida
+- Parâmetros: `id` - ID da categoria
+
+#### Atualizar Categoria
+- **PUT** `/api/category/categories/:id`
+- Descrição: Atualiza informações de uma categoria
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID da categoria
+- Body:
+```json
+{
+  "name": "Lanches Premium",
+  "description": "Hambúrgueres artesanais e especiais"
+}
+```
+
+#### Deletar Categoria
+- **DELETE** `/api/category/categories/:id`
+- Descrição: Remove uma categoria do sistema
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID da categoria
+
+---
+
+### 🛒 Carrinho de Compras
+
+#### Buscar Carrinho do Usuário
+- **GET** `/api/cart/cart`
+- Descrição: Retorna o carrinho do usuário autenticado
+- Autenticação: Bearer Token
+
+#### Buscar Todos os Carrinhos (Admin)
+- **GET** `/api/cart/carts`
+- Descrição: Lista todos os carrinhos do sistema
+- Autenticação: Bearer Token
+
+#### Adicionar Produtos ao Carrinho
+- **POST** `/api/cart/carts/products`
+- Descrição: Adiciona produtos ao carrinho
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "products": [
+    {
+      "_id": "65abc123def456789012345",
+      "quantity": 2
+    },
+    {
+      "_id": "65abc123def456789012346",
+      "quantity": 1
+    }
+  ]
+}
+```
+
+#### Remover Produto do Carrinho
+- **DELETE** `/api/cart/carts/products`
+- Descrição: Remove um produto do carrinho
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "products": [
+    {
+      "_id": "65abc123def456789012345"
+    }
+  ]
+}
+```
+
+#### Atualizar Quantidade de Produto
+- **PUT** `/api/cart/carts/products`
+- Descrição: Atualiza a quantidade de um produto no carrinho
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "productId": "65abc123def456789012345",
+  "quantity": 3
+}
+```
+
+#### Realizar Pagamento do Carrinho
+- **POST** `/api/cart/pay`
+- Descrição: Finaliza a compra do carrinho
+- Autenticação: Bearer Token
+- Body:
+```json
+{
+  "paymentMethod": "credit_card",
+  "transactionId": "TXN123456789"
+}
+```
+
+---
+
+### 📦 Pedidos (Orders)
+
+#### Criar Pedido a partir do Carrinho
+- **POST** `/api/order/from-cart`
+- Descrição: Cria um pedido a partir dos itens do carrinho
+- Autenticação: Bearer Token
+
+#### Listar Meus Pedidos
+- **GET** `/api/order/my`
+- Descrição: Lista todos os pedidos do usuário autenticado
+- Autenticação: Bearer Token
+
+#### Buscar Pedido por ID
+- **GET** `/api/order/my/:id`
+- Descrição: Retorna detalhes de um pedido específico do usuário
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do pedido
+
+#### Listar Todos os Pedidos (Admin)
+- **GET** `/api/order/all`
+- Descrição: Lista todos os pedidos do sistema
+- Autenticação: Bearer Token
+
+#### Atualizar Status do Pedido (Admin)
+- **PUT** `/api/order/:id/status`
+- Descrição: Atualiza o status de um pedido
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do pedido
+- Body:
+```json
+{
+  "status": "em_preparo"
+}
+```
+
+#### Deletar Pedido (Admin)
+- **DELETE** `/api/order/:id`
+- Descrição: Remove um pedido do sistema
+- Autenticação: Bearer Token
+- Parâmetros: `id` - ID do pedido
+
+---
+
+## 📋 Exemplos de Integração Frontend
+
+### Exemplo: Login e Autenticação
+```javascript
+// Login
+const response = await fetch('http://localhost:3000/api/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: 'usuario@email.com',
+    password: 'Senha123!'
+  })
+});
+
+const data = await response.json();
+const token = data.token;
+
+// Usar token nas próximas requisições
+const productsResponse = await fetch('http://localhost:3000/api/product/products', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+```
+
+### Exemplo: Adicionar Produto ao Carrinho
+```javascript
+const addToCart = async (productId, quantity, token) => {
+  const response = await fetch('http://localhost:3000/api/cart/carts/products', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      products: [
+        {
+          _id: productId,
+          quantity: quantity
+        }
+      ]
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### Exemplo: Listar Produtos com Paginação
+```javascript
+const getProducts = async (page = 1, limit = 10) => {
+  const response = await fetch(
+    `http://localhost:3000/api/product/products?page=${page}&limit=${limit}`
+  );
+  
+  return await response.json();
+};
+```
+
+---
+
+## 🔧 Estrutura do Projeto
 
 ```text
 .env         # Variáveis de ambiente
@@ -159,90 +508,46 @@ src/
     service/      # Regras de negócio
 ```
 
-## 🚀 Funcionalidades
+---
 
-- 👤 Cadastro, autenticação e gerenciamento de usuários
-- 🛍️ CRUD de produtos e categorias
-- ⭐ Favoritar produtos e gerenciar endereços do usuário
-- 🎫 Sistema de tickets para suporte
-- 🛒 Carrinho de compras e pagamento
-- 🔒 Proteção de rotas com autenticação JWT
+## 🛡️ Boas Práticas de Segurança
 
-## ⚡ Instalação
+- Sempre use HTTPS em produção
+- Mantenha o JWT_SECRET seguro e complexo
+- Nunca exponha credenciais no código
+- Valide todos os inputs no frontend antes de enviar
+- Implemente rate limiting para prevenir ataques
+- Use variáveis de ambiente para configurações sensíveis
 
-```bash
-# 1. Clone o repositório
-git clone https://github.com/dmrramaral/marketPlace.git
+---
 
-# 2. Instale as dependências
-npm install
+## 🚀 Deploy
 
-# 3. Configure o arquivo .env
-# Exemplo:
-MONGODB_URI=mongodb://localhost:27017/marketplace
-JWT_SECRET=sua_chave_secreta
-PORT=3000
+O projeto está configurado para deploy na Vercel. Configure as variáveis de ambiente:
+- `MONGODB_URI` - URL de conexão do MongoDB
+- `JWT_SECRET` - Chave secreta para JWT
+- `FRONTEND_URL` - URL do frontend para CORS
 
-# 4. Inicie o servidor
-npm run dev
-```
+---
 
-## 📚 Rotas Principais
-
-### Usuário
-- `POST /api/user/create` - Criar usuário
-- `GET /api/user` - Listar usuários
-- `GET /api/user/:id` - Buscar usuário por ID
-- `PUT /api/user/:id` - Atualizar usuário
-- `DELETE /api/user/:id` - Deletar usuário
-- `POST /api/user/:id/favorites` - Adicionar produto aos favoritos
-- `DELETE /api/user/:id/favorites` - Remover produto dos favoritos
-- `POST /api/user/:id/address` - Adicionar endereço
-- `DELETE /api/user/:id/address` - Remover endereço
-
-### Autenticação
-- `POST /api/auth/login` - Login do usuário
-
-### Produto
-- `POST /api/product/products/create` - Criar produto
-- `GET /api/product/products` - Listar produtos
-- `GET /api/product/products/:id` - Buscar produto por ID
-- `PUT /api/product/products/:id` - Atualizar produto
-- `DELETE /api/product/products/:id` - Deletar produto
-
-### Categoria
-- `POST /api/category/categories/create` - Criar categoria
-- `GET /api/category/categories` - Listar categorias
-- `GET /api/category/categories/:id` - Buscar categoria por ID
-- `PUT /api/category/categories/:id` - Atualizar categoria
-- `DELETE /api/category/categories/:id` - Deletar categoria
-
-### Carrinho
-- `GET /api/cart/cart` - Buscar carrinho do usuário
-- `GET /api/cart/carts` - Buscar todos os carrinhos (admin)
-- `POST /api/cart/carts/products` - Adicionar produtos ao carrinho
-- `DELETE /api/cart/carts/products` - Remover produto do carrinho
-- `POST /api/cart/pay` - Realizar pagamento do carrinho
-
-## 📝 Exemplos de Uso
-
-### Requisição de Login
-```http
-POST /api/auth/login
-Content-Type: application/json
-{
-    "email": "usuario@email.com",
-    "password": "Senha123*"
-}
-```
-
-### Resposta
-```json
-{
-    "token": "<jwt_token>"
-}
-```
-
-## 📄 Licença
+## 📝 Licença
 
 Este projeto está sob a licença GNU GPL v3. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 👨‍💻 Desenvolvedor
+
+Projeto mantido por: dmrramaral
+
+---
+
+<div align="center">
+  <h3>🍔 Wallace Lanches - Sistema de Gerenciamento 🍔</h3>
+  <p>Backend robusto e completo para lanchonetes</p>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <br>
+  <img src="https://img.shields.io/github/license/dmrramaral/marketPlace?style=for-the-badge" />
+</div>
