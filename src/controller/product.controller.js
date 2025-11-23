@@ -3,13 +3,13 @@ const productService = require('../service/product.service');
 //Criar novo produto
 const createProductController = () => async (req, res) => {
     try {
-        const { name, description, price, category, brand, sizes, colors, stock, images, image } = req.body;
+        const { name, description, price, category, brand, sizes, colors, stock, images, image, ingredients } = req.body;
         // Validações básicas
         if (!name || !description || !price || !category || !stock) {
             return res.status(400).json({ error: 'Nome, descrição, preço, categoria e estoque são obrigatórios' });
         }
         // Criar o produto
-        const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images, image });
+        const newProduct = await productService.createProductService({ name, description, price, category, brand, sizes, colors, stock, images, image, ingredients });
         res.status(201).json(newProduct);
     } catch (error) {
         console.log(error);
@@ -44,18 +44,18 @@ const getProductByIdController = () => async (req, res) => {
 //Atualizar produto por ID
 const updateProductController = () => async (req, res) => {
     try {
-        const { name, description, price, category, brand, sizes, colors, stock, images, image } = req.body;
+        const { name, description, price, category, brand, sizes, colors, stock, images, image, ingredients } = req.body;
         
         console.log('📦 Backend recebeu UPDATE:', req.body);
         console.log('🖼️ Image field:', image);
         console.log('🖼️ Images field:', images);
 
         // Validação básica
-        if (!name && !description && !price && !category && !brand && !sizes && !colors && stock === undefined && !images && !image) {
+        if (!name && !description && !price && !category && !brand && !sizes && !colors && stock === undefined && !images && !image && !ingredients) {
             return res.status(400).json({ error: 'Pelo menos um campo deve ser fornecido para atualização' });
         }
 
-        const updatedProduct = await productService.updateProductService(req.params.id, { name, description, price, category, brand, sizes, colors, stock, images, image });
+        const updatedProduct = await productService.updateProductService(req.params.id, { name, description, price, category, brand, sizes, colors, stock, images, image, ingredients });
         
         console.log('✅ Produto atualizado:', updatedProduct);
         
