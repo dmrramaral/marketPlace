@@ -32,7 +32,7 @@ Crie um arquivo `.env` na raiz com as seguintes variáveis básicas:
 ```
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/wallace-lanches
-JWT_SECRET=sua_chave_secreta_aqui
+JWT_SECRET=your_super_secure_random_jwt_secret_key_here_min_32_chars
 ```
 
 3. Rodar em desenvolvimento:
@@ -422,8 +422,8 @@ const response = await fetch('http://localhost:3000/api/auth/login', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    email: 'usuario@email.com',
-    password: 'Senha123!'
+    email: 'user@example.com',
+    password: 'YourPassword123!'
   })
 });
 
