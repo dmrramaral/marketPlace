@@ -69,7 +69,9 @@ Modelo para gerenciamento de usuários do sistema.
   
   // Permissões
   admin: Boolean,                   // Campo legado (padrão: false)
+                                    // Mantido para compatibilidade, mas use 'role'
   role: String                      // Papel: 'admin', 'user', 'manager' (padrão: 'user')
+                                    // Este é o campo recomendado para verificar permissões
 }
 ```
 
@@ -859,6 +861,8 @@ DELETE /api/category/categories/:id
 No Content
 ```
 
+**Observação:** Este endpoint retorna status 204 (sem conteúdo) seguindo a convenção REST, diferente de outros endpoints de delete que retornam 200 com mensagem.
+
 ---
 
 ### Carrinho
@@ -1293,12 +1297,8 @@ const loginResponse = await fetch('http://localhost:3000/api/auth/login', {
 
 const { token } = await loginResponse.json();
 
-// 2. Buscar produtos
-const productsResponse = await fetch('http://localhost:3000/api/product/products?page=1&limit=10', {
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-});
+// 2. Buscar produtos (não requer autenticação)
+const productsResponse = await fetch('http://localhost:3000/api/product/products?page=1&limit=10');
 
 const products = await productsResponse.json();
 
