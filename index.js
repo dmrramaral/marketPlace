@@ -147,7 +147,7 @@ app.use('/api/order', orderRouter);
 app.use('/docs', docsRouter);
 
 app.get("/", (req, res) => {
-  res.send("Bem-vindo ao servidor de market Place da Loja de calcados!");
+  res.send("Bem-vindo ao Wallace Lanches - Sistema de Gerenciamento de Lanchonete!");
 });
 
 // 🚀 Inicializar servidor e conectar ao banco
