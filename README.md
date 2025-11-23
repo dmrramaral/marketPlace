@@ -57,22 +57,6 @@ Para usar a autenticação no Swagger:
 3. Clique em "Authorize" no Swagger UI
 4. Cole o token no formato: `Bearer <seu-token>`
 
-## Wallace Lanches
-
-## 📚 Documentação (Swagger)
-
-Após subir o servidor, abra a documentação interativa em:
-
-```
-http://localhost:3000/docs/api-docs
-```
-
-Para usar a autenticação no Swagger:
-1. Faça login em `/api/auth/login`
-2. Copie o token JWT retornado
-3. Clique em "Authorize" no Swagger UI
-4. Cole o token no formato: `Bearer <seu-token>`
-
 ---
 
 ## 🚀 Rotas da API - Guia Completo para Frontend
